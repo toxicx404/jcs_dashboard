@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JCS Sustainability Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Light Theme Tokens */
+      --color-bg-page: #f8fafc;
+      /* slate-50 */
+      --color-bg-card: #ffffff;
+      /* white */
+      --color-text-main: #0f172a;
+      /* slate-900 */
+      --color-text-muted: #64748b;
+      /* slate-500 */
+      --color-border: #e2e8f0;
+      /* slate-200 */
+    }
+
+    .dark {
+      /* Dark Theme Tokens */
+      --color-bg-page: #0f172a;
+      /* slate-900 */
+      --color-bg-card: #1e293b;
+      /* slate-800 */
+      --color-text-main: #f1f5f9;
+      /* slate-100 */
+      --color-text-muted: #94a3b8;
+      /* slate-400 */
+      --color-border: #334155;
+      /* slate-700 */
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--color-bg-page);
+      color: var(--color-text-main);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* GLOBAL RESET FOR TAP HIGHLIGHTS (Mobile) */
+    * {
+      -webkit-tap-highlight-color: transparent !important;
+    }
+
+    /* View Transitions CSS for Circular Reveal */
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation: none;
+      mix-blend-mode: normal;
+    }
+
+    /* Ensure the 'top' layer of the animation is always the one we are clipping */
+    .dark::view-transition-old(root) {
+      z-index: 1;
+    }
+
+    .dark::view-transition-new(root) {
+      z-index: 999;
+    }
+
+    ::view-transition-old(root) {
+      z-index: 999;
+    }
+
+    ::view-transition-new(root) {
+      z-index: 1;
+    }
+
+    /* 
+       * AGGRESSIVE CHART FOCUS RESET 
+       * Targets every possible element inside Recharts to kill outlines and highlights
+       */
+    .recharts-wrapper,
+    .recharts-wrapper *,
+    .recharts-surface,
+    .recharts-surface *,
+    .recharts-responsive-container,
+    .recharts-responsive-container *,
+    .recharts-layer,
+    .recharts-layer *,
+    .recharts-sector,
+    .recharts-curve,
+    .recharts-rectangle,
+    .recharts-dot,
+    .recharts-tooltip-cursor,
+    g,
+    path,
+    rect,
+    circle,
+    line,
+    text,
+    foreignObject {
+      outline: none !important;
+      box-shadow: none !important;
+      border: none !important;
+    }
+
+    /* Specific focus-visible overrides */
+    *:focus,
+    *:focus-visible {
+      outline: none !important;
+      box-shadow: none !important;
+    }
+
+    /* Restore focus ring ONLY for inputs and buttons that need it for accessibility (optional, but good practice) */
+    input:focus-visible,
+    textarea:focus-visible,
+    select:focus-visible,
+    button:focus-visible {
+      outline: 2px solid var(--color-text-muted) !important;
+      outline-offset: 2px !important;
+    }
+
+    /* But remove it again specifically for chart elements if they happen to be buttons (rare) */
+    .recharts-wrapper button:focus,
+    .recharts-wrapper button:focus-visible {
+      outline: none !important;
+    }
+
+    /* Fix for Date Picker Icon in Dark Mode */
+    .dark ::-webkit-calendar-picker-indicator {
+      filter: invert(1);
+      cursor: pointer;
+    }
+  </style>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            // Semantic Colors mapped to CSS Variables
+            page: 'var(--color-bg-page)',
+            card: 'var(--color-bg-card)',
+            main: 'var(--color-text-main)',
+            muted: 'var(--color-text-muted)',
+            border: 'var(--color-border)',
+
+            // Brand Colors (Green Theme)
+            brand: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              300: '#86efac',
+              400: '#4ade80',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+            }
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-out forwards',
+            'scale-up': 'scaleUp 0.3s ease-out forwards',
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'shimmer': 'shimmer 1.5s infinite linear',
+            'slide-in-right': 'slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0', transform: 'translateY(10px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            scaleUp: {
+              '0%': { transform: 'scale(0.95)', opacity: '0' },
+              '100%': { transform: 'scale(1)', opacity: '1' },
+            },
+            shimmer: {
+              '0%': { transform: 'translateX(-100%)' },
+              '100%': { transform: 'translateX(100%)' }
+            },
+            slideInRight: {
+              '0%': { transform: 'translateX(100%)', opacity: '0' },
+              '100%': { transform: 'translateX(0)', opacity: '1' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <div id="root">
+    <!-- Fallback content if React fails to load -->
+    <div style="padding: 20px; font-family: Arial; text-align: center;">
+      <h1>Loading JCS Dashboard...</h1>
+      <p>If this message persists, check the browser console for errors.</p>
+    </div>
+  </div>
+  <script>
+    // Debug script to verify page loads
+    console.log('📄 HTML loaded');
+    console.log('🔍 Root element:', document.getElementById('root'));
+    console.log('🌐 Window location:', window.location.href);
+  </script>
+  <!-- Vite entry point - This loads React -->
+  <script type="module" src="/index.tsx"></script>
+</body>
+
+</html>

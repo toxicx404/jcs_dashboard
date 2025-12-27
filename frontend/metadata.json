@@ -1,0 +1,5 @@
+{
+  "name": "JCS Sustainability Dashboard",
+  "description": "A centralized dashboard for the JECRC Center for Sustainability (JCS) to track, evaluate, and rank sustainability-focused events conducted by university departments. Features role-based access for Admins, Coordinators, and Viewers.",
+  "requestFramePermissions": []
+}
