@@ -6,7 +6,8 @@ interface EventAttributes {
   title: string;
   departmentId: number;
   departmentName: string;
-  date: string;
+  fromDate: string;
+  toDate: string;
   type: string;
   description: string;
   participants: number;
@@ -28,7 +29,8 @@ export class Event extends Model<EventAttributes, EventCreationAttributes> {
   declare title: string;
   declare departmentId: number;
   declare departmentName: string;
-  declare date: string;
+  declare fromDate: string;
+  declare toDate: string;
   declare type: string;
   declare description: string;
   declare participants: number;
@@ -65,7 +67,11 @@ Event.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    date: {
+    fromDate: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    toDate: {
       type: DataTypes.STRING,
       allowNull: false,
     },

@@ -31,11 +31,11 @@
 USE jcs_dashboard;
 
 -- 1. Departments
-INSERT INTO departments (name, code, coordinatorName, coordinatorEmail, totalCredits, eventCount) VALUES
-('Computer Science', 'CS', 'Dr. Smith', 'smith@cs.edu', 10, 2),
-('Electrical Engineering', 'EE', 'Prof. Johnson', 'johnson@ee.edu', 5, 1),
-('Mechanical Engineering', 'ME', 'Dr. Brown', 'brown@me.edu', 0, 0),
-('Civil Engineering', 'CE', 'Prof. Davis', 'davis@ce.edu', 0, 0);
+INSERT INTO departments (name, code, coordinatorName, totalCredits, eventCount) VALUES
+('Computer Science', 'CS', 'Dr. Smith', 10, 2),
+('Electrical Engineering', 'EE', 'Prof. Johnson', 5, 1),
+('Mechanical Engineering', 'ME', 'Dr. Brown', 0, 0),
+('Civil Engineering', 'CE', 'Prof. Davis', 0, 0);
 
 -- 2. Users (Password: 123)
 -- We insert '123' as passwordHash. If the app uses bcrypt, this needs to be a hash.
@@ -55,10 +55,10 @@ UPDATE users SET passwordHash = '$2b$10$abcdefghijklmnopqrstuvABCDEFGHIJKLMNOPQR
 
 
 -- 3. Events
-INSERT INTO events (title, departmentId, departmentName, date, type, description, participants, status, credits, submissionDate) VALUES
-('Tree Plantation Drive', 1, 'Computer Science', '2023-10-15', 'Implementation', 'Planted 50 trees in campus.', 50, 'Approved', 5, '2023-10-16'),
-('Solar Energy Workshop', 1, 'Computer Science', '2023-11-20', 'Awareness', 'Workshop on solar panels.', 100, 'Approved', 5, '2023-11-21'),
-('E-Waste Collection', 2, 'Electrical Engineering', '2023-12-05', 'Implementation', 'Collected 20kg of e-waste.', 30, 'Submitted', 0, '2023-12-06');
+INSERT INTO events (title, departmentId, departmentName, fromDate, toDate, type, description, participants, status, credits, submissionDate) VALUES
+('Tree Plantation Drive', 1, 'Computer Science', '2023-10-15', '2023-10-15', 'Implementation', 'Planted 50 trees in campus.', 50, 'Approved', 5, '2023-10-16'),
+('Solar Energy Workshop', 1, 'Computer Science', '2023-11-20', '2023-11-20', 'Awareness', 'Workshop on solar panels.', 100, 'Approved', 5, '2023-11-21'),
+('E-Waste Collection', 2, 'Electrical Engineering', '2023-12-05', '2023-12-05', 'Implementation', 'Collected 20kg of e-waste.', 30, 'Submitted', 0, '2023-12-06');
 
 -- 4. File Uploads
 INSERT INTO file_uploads (filename, originalName, filePath, fileSize, mimeType, uploadedBy, eventId, uploadType) VALUES

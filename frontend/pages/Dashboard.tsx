@@ -63,12 +63,12 @@ const Dashboard = () => {
 
     // Sort by date (Oldest -> Newest)
     trendData = myEvents
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      .sort((a, b) => new Date(a.fromDate).getTime() - new Date(b.fromDate).getTime())
       .map(e => ({
         name: e.title.length > 12 ? e.title.substring(0, 12) + '...' : e.title, // Truncated for Axis
         fullName: e.title,
         credits: e.credits,
-        date: e.date
+        date: e.fromDate
       }));
 
     // For Coordinators, "Best Month" logic might just show "Highest Credit Event"
@@ -81,7 +81,7 @@ const Dashboard = () => {
   } else {
     // --- Admin/Viewer View: Monthly Aggregation ---
     const monthlyData = approvedEvents.reduce((acc: any, event) => {
-      const month = new Date(event.date).toLocaleString('default', { month: 'short' });
+      const month = new Date(event.fromDate).toLocaleString('default', { month: 'short' });
       if (!acc[month]) acc[month] = 0;
       acc[month] += event.credits;
       return acc;

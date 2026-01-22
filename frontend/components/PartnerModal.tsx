@@ -117,7 +117,7 @@ const PartnerModal: React.FC<PartnerModalProps> = ({ isOpen, onClose }) => {
                                 <div className="grid md:grid-cols-2 gap-x-8 gap-y-6 mb-8">
                                     {/* Organization Name */}
                                     <div className="col-span-2">
-                                        <label className={labelClasses}>Organization / Company</label>
+                                        <label className={labelClasses}>Organization / Company <span className="text-red-500">*</span></label>
                                         <div className="relative group">
                                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                                 <Building2 size={18} className="text-slate-400 group-focus-within:text-[#DE1819] transition-colors" />
@@ -136,7 +136,7 @@ const PartnerModal: React.FC<PartnerModalProps> = ({ isOpen, onClose }) => {
 
                                     {/* Contact Person */}
                                     <div>
-                                        <label className={labelClasses}>Contact Person</label>
+                                        <label className={labelClasses}>Contact Person <span className="text-red-500">*</span></label>
                                         <div className="relative group">
                                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                                 <User size={18} className="text-slate-400 group-focus-within:text-[#DE1819] transition-colors" />
@@ -155,7 +155,7 @@ const PartnerModal: React.FC<PartnerModalProps> = ({ isOpen, onClose }) => {
 
                                     {/* Phone */}
                                     <div>
-                                        <label className={labelClasses}>Phone Number</label>
+                                        <label className={labelClasses}>Phone Number <span className="text-red-500">*</span></label>
                                         <div className="relative group">
                                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                                 <Phone size={18} className="text-slate-400 group-focus-within:text-[#DE1819] transition-colors" />
@@ -174,7 +174,7 @@ const PartnerModal: React.FC<PartnerModalProps> = ({ isOpen, onClose }) => {
 
                                     {/* Email */}
                                     <div className="col-span-2">
-                                        <label className={labelClasses}>Email Address</label>
+                                        <label className={labelClasses}>Email Address <span className="text-red-500">*</span></label>
                                         <div className="relative group">
                                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                                 <Mail size={18} className="text-slate-400 group-focus-within:text-[#DE1819] transition-colors" />
@@ -193,7 +193,7 @@ const PartnerModal: React.FC<PartnerModalProps> = ({ isOpen, onClose }) => {
 
                                     {/* Website */}
                                     <div>
-                                        <label className={labelClasses}>Website</label>
+                                        <label className={labelClasses}>Website <span className="text-red-500">*</span></label>
                                         <div className="relative group">
                                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                                 <Globe size={18} className="text-slate-400 group-focus-within:text-[#DE1819] transition-colors" />
@@ -205,13 +205,14 @@ const PartnerModal: React.FC<PartnerModalProps> = ({ isOpen, onClose }) => {
                                                 onChange={handleChange}
                                                 className={inputClasses}
                                                 placeholder="https://..."
+                                                required
                                             />
                                         </div>
                                     </div>
 
                                     {/* LinkedIn */}
                                     <div>
-                                        <label className={labelClasses}>LinkedIn</label>
+                                        <label className={labelClasses}>LinkedIn <span className="text-red-500">*</span></label>
                                         <div className="relative group">
                                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                                 <Globe size={18} className="text-slate-400 group-focus-within:text-[#DE1819] transition-colors" />
@@ -223,6 +224,7 @@ const PartnerModal: React.FC<PartnerModalProps> = ({ isOpen, onClose }) => {
                                                 onChange={handleChange}
                                                 className={inputClasses}
                                                 placeholder="linkedin.com/in/..."
+                                                required
                                             />
                                         </div>
                                     </div>
@@ -252,7 +254,7 @@ const PartnerModal: React.FC<PartnerModalProps> = ({ isOpen, onClose }) => {
 
                                     {/* Message */}
                                     <div className="col-span-2">
-                                        <label className={labelClasses}>Proposal / Message</label>
+                                        <label className={labelClasses}>Proposal / Message <span className="text-red-500">*</span></label>
                                         <div className="relative group">
                                             <div className="absolute top-4 left-4 flex items-start pointer-events-none">
                                                 <MessageSquare size={18} className="text-slate-400 group-focus-within:text-[#DE1819] transition-colors" />

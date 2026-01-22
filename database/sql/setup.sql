@@ -30,16 +30,12 @@ CREATE TABLE departments (
     name VARCHAR(255) NOT NULL,
     code VARCHAR(50) NOT NULL UNIQUE,
     coordinatorName VARCHAR(255) NOT NULL,
-    coordinatorEmail VARCHAR(255) NULL,
-    coordinatorPhone VARCHAR(50) NULL,
     totalCredits INT DEFAULT 0,
     eventCount INT DEFAULT 0,
-    isActive BOOLEAN DEFAULT TRUE,
     createdAt DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
     updatedAt DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
     INDEX idx_code (code),
-    INDEX idx_name (name),
-    INDEX idx_isActive (isActive)
+    INDEX idx_name (name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -51,7 +47,8 @@ CREATE TABLE events (
     title VARCHAR(255) NOT NULL,
     departmentId INT NOT NULL,
     departmentName VARCHAR(255) NOT NULL,
-    date VARCHAR(50) NOT NULL,
+    fromDate VARCHAR(50) NOT NULL,
+    toDate VARCHAR(50) NOT NULL,
     type VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
     participants INT NOT NULL DEFAULT 0,
@@ -68,7 +65,7 @@ CREATE TABLE events (
     updatedAt DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
     INDEX idx_departmentId (departmentId),
     INDEX idx_status (status),
-    INDEX idx_date (date),
+    INDEX idx_fromDate (fromDate),
     INDEX idx_departmentName (departmentName),
     INDEX idx_createdAt (createdAt),
     FOREIGN KEY (departmentId) REFERENCES departments(id) ON DELETE CASCADE

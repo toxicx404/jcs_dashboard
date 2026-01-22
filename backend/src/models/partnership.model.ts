@@ -7,8 +7,8 @@ interface PartnershipAttributes {
     contactPerson: string;
     email: string;
     phone: string;
-    website?: string;
-    linkedin?: string;
+    website: string;
+    linkedin: string;
     partnershipType: 'Sponsorship' | 'Event' | 'Workshop' | 'Other';
     message: string;
     status: 'Pending' | 'Approved' | 'Rejected';
@@ -22,8 +22,8 @@ export class Partnership extends Model<PartnershipAttributes, PartnershipCreatio
     declare contactPerson: string;
     declare email: string;
     declare phone: string;
-    declare website: string | null;
-    declare linkedin: string | null;
+    declare website: string;
+    declare linkedin: string;
     declare partnershipType: 'Sponsorship' | 'Event' | 'Workshop' | 'Other';
     declare message: string;
     declare status: 'Pending' | 'Approved' | 'Rejected';
@@ -57,11 +57,11 @@ Partnership.init(
         },
         website: {
             type: DataTypes.STRING,
-            allowNull: true,
+            allowNull: false,
         },
         linkedin: {
             type: DataTypes.STRING,
-            allowNull: true,
+            allowNull: false,
         },
         partnershipType: {
             type: DataTypes.ENUM('Sponsorship', 'Event', 'Workshop', 'Other'),

@@ -8,7 +8,8 @@ import PartnerModal from '../components/PartnerModal';
 import {
     ArrowRight, Globe, Target, Calendar,
     Leaf, Users, Lightbulb, X,
-    Mic, Trophy, Zap, Layout, Recycle, Instagram, Linkedin, Mail, ArrowUp
+    Mic, Trophy, Zap, Layout, Recycle, Instagram, Linkedin, Mail, ArrowUp,
+    Wallet, Wheat, HeartPulse, GraduationCap, Droplets, TrendingUp, Factory, Scale, Building2, Fish, TreePine, Gavel, Handshake, Check, ChevronDown
 } from 'lucide-react';
 
 const MainPage = () => {
@@ -58,25 +59,36 @@ const MainPage = () => {
         }
     };
 
+    const float = {
+        animate: {
+            y: [0, -20, 0],
+            transition: {
+                duration: 6,
+                repeat: Infinity,
+                ease: "easeInOut"
+            }
+        }
+    };
+
     // SDG Data with Details
     const sdgs = [
-        { id: 1, title: "No Poverty", color: "bg-red-500", desc: "Eradicating poverty in all its forms remains one of the greatest challenges facing humanity. We focus on aid and resource mobilization.", details: "Our target is to ensure significant mobilization of resources from a variety of sources. We aim to implement social protection systems and ensure equal rights to economic resources, basic services, and technology for the vulnerable." },
-        { id: 2, title: "Zero Hunger", color: "bg-yellow-500", desc: "Seeking sustainable solutions to end hunger in all its forms by 2030 and to achieve food security.", details: "The goal includes ending malnutrition, doubling agricultural productivity, and ensuring sustainable food production systems. We support local drives to feed the needy and educate on nutritional standards." },
-        { id: 3, title: "Good Health", color: "bg-green-500", desc: "Ensuring healthy lives and promoting well-being for all at all ages is essential to sustainable development.", details: "We focus on efficient health financing and recruitment, development, training and retention of the health workforce. Our goal is to reduce maternal mortality, end preventable deaths of newborns, and fight communicable diseases." },
-        { id: 4, title: "Quality Education", color: "bg-red-600", desc: "Obtaining a quality education is the foundation to improving people’s lives and sustainable development.", details: "We ensure inclusive and equitable quality education and promote lifelong learning opportunities for all. This includes equal access to affordable vocational training and eliminating gender disparities in education." },
-        { id: 5, title: "Gender Equality", color: "bg-orange-500", desc: "Gender equality is not only a fundamental human right, but a necessary foundation for a peaceful, prosperous world.", details: "We work to end all forms of discrimination against all women and girls everywhere. This involves eliminating violence, harmful practices like child marriage, and ensuring full participation in leadership and decision-making." },
-        { id: 6, title: "Clean Water", color: "bg-cyan-500", desc: "Clean, accessible water for all is an essential part of the world we want to live in.", details: "We aim to ensure availability and sustainable management of water and sanitation for all. This includes achieving universal and equitable access to safe and affordable drinking water and adequate sanitation/hygiene." },
-        { id: 7, title: "Clean Energy", color: "bg-yellow-400", desc: "Energy is central to nearly every major challenge and opportunity the world faces today.", details: "Our mission is to ensure access to affordable, reliable, sustainable and modern energy for all. We promote investment in energy infrastructure and clean energy technology." },
-        { id: 8, title: "Decent Work", color: "bg-red-700", desc: "Sustainable economic growth will require societies to create the conditions that allow people to have quality jobs.", details: "We promote sustained, inclusive and sustainable economic growth, full and productive employment and decent work for all. We support entrepreneurship, creativity and innovation." },
-        { id: 9, title: "Innovation", color: "bg-orange-600", desc: "Investments in infrastructure are crucial to achieving sustainable development.", details: "Our focus is to build resilient infrastructure, promote inclusive and sustainable industrialization and foster innovation. We support domestic technology development, research and innovation in developing countries." },
-        { id: 10, title: "Reduced Inequalities", color: "bg-pink-500", desc: "To reduce inequalities, policies should be universal in principle, paying attention to the needs of disadvantaged populations.", details: "We aim to reduce inequality within and among countries. This involves empowering and promoting the social, economic and political inclusion of all, irrespective of age, sex, disability, race, ethnicity, origin, religion or economic status." },
-        { id: 11, title: "Sustainable Cities", color: "bg-orange-400", desc: "There is a need to make cities safe, inclusive, resilient and sustainable for all humanity.", details: "We work to make cities and human settlements inclusive, safe, resilient and sustainable. This includes ensuring access to safe and affordable housing, basic services, and sustainable transport systems." },
-        { id: 12, title: "Consumption", color: "bg-yellow-600", desc: "Sustainable consumption and production is about promoting resource and energy efficiency.", details: "We ensure sustainable consumption and production patterns. Our goals include substantially reducing waste generation through prevention, reduction, recycling and reuse." },
-        { id: 13, title: "Climate Action", color: "bg-green-700", desc: "Climate change is a global challenge that does not respect national borders.", details: "We take urgent action to combat climate change and its impacts. This involves strengthening resilience to climate-related hazards and integrating climate change measures into policies, strategies and planning." },
-        { id: 14, title: "Life Below Water", color: "bg-blue-500", desc: "Our oceans drive global systems that make the Earth habitable for humankind.", details: "We conserve and sustainably use the oceans, seas and marine resources. We aim to prevent and significantly reduce marine pollution of all kinds and addressing ocean acidification." },
-        { id: 15, title: "Life on Land", color: "bg-green-600", desc: "Deforestation and desertification are major challenges to sustainable development.", details: "We protect, restore and promote sustainable use of terrestrial ecosystems. We combat desertification, halt and reverse land degradation and halt biodiversity loss." },
-        { id: 16, title: "Peace & Justice", color: "bg-blue-700", desc: "Peace, stability, human rights and effective governance are important pathways for development.", details: "We promote peaceful and inclusive societies for sustainable development, provide access to justice for all and build effective, accountable and inclusive institutions at all levels." },
-        { id: 17, title: "Partnerships", color: "bg-blue-900", desc: "The SDGs can only be realized with strong global partnerships and cooperation.", details: "We strengthen the means of implementation and revitalize the Global Partnership for Sustainable Development. This includes enhancing global macroeconomic stability and policy coordination." },
+        { id: 1, title: "No Poverty", color: "bg-red-500", icon: Wallet, desc: "Eradicating poverty in all its forms remains one of the greatest challenges facing humanity. We focus on aid and resource mobilization.", details: "Our target is to ensure significant mobilization of resources from a variety of sources. We aim to implement social protection systems and ensure equal rights to economic resources, basic services, and technology for the vulnerable." },
+        { id: 2, title: "Zero Hunger", color: "bg-yellow-500", icon: Wheat, desc: "Seeking sustainable solutions to end hunger in all its forms by 2030 and to achieve food security.", details: "The goal includes ending malnutrition, doubling agricultural productivity, and ensuring sustainable food production systems. We support local drives to feed the needy and educate on nutritional standards." },
+        { id: 3, title: "Good Health", color: "bg-green-500", icon: HeartPulse, desc: "Ensuring healthy lives and promoting well-being for all at all ages is essential to sustainable development.", details: "We focus on efficient health financing and recruitment, development, training and retention of the health workforce. Our goal is to reduce maternal mortality, end preventable deaths of newborns, and fight communicable diseases." },
+        { id: 4, title: "Quality Education", color: "bg-red-600", icon: GraduationCap, desc: "Obtaining a quality education is the foundation to improving people’s lives and sustainable development.", details: "We ensure inclusive and equitable quality education and promote lifelong learning opportunities for all. This includes equal access to affordable vocational training and eliminating gender disparities in education." },
+        { id: 5, title: "Gender Equality", color: "bg-orange-500", icon: Users, desc: "Gender equality is not only a fundamental human right, but a necessary foundation for a peaceful, prosperous world.", details: "We work to end all forms of discrimination against all women and girls everywhere. This involves eliminating violence, harmful practices like child marriage, and ensuring full participation in leadership and decision-making." },
+        { id: 6, title: "Clean Water", color: "bg-cyan-500", icon: Droplets, desc: "Clean, accessible water for all is an essential part of the world we want to live in.", details: "We aim to ensure availability and sustainable management of water and sanitation for all. This includes achieving universal and equitable access to safe and affordable drinking water and adequate sanitation/hygiene." },
+        { id: 7, title: "Clean Energy", color: "bg-yellow-400", icon: Zap, desc: "Energy is central to nearly every major challenge and opportunity the world faces today.", details: "Our mission is to ensure access to affordable, reliable, sustainable and modern energy for all. We promote investment in energy infrastructure and clean energy technology." },
+        { id: 8, title: "Decent Work", color: "bg-red-700", icon: TrendingUp, desc: "Sustainable economic growth will require societies to create the conditions that allow people to have quality jobs.", details: "We promote sustained, inclusive and sustainable economic growth, full and productive employment and decent work for all. We support entrepreneurship, creativity and innovation." },
+        { id: 9, title: "Innovation", color: "bg-orange-600", icon: Factory, desc: "Investments in infrastructure are crucial to achieving sustainable development.", details: "Our focus is to build resilient infrastructure, promote inclusive and sustainable industrialization and foster innovation. We support domestic technology development, research and innovation in developing countries." },
+        { id: 10, title: "Reduced Inequalities", color: "bg-pink-500", icon: Scale, desc: "To reduce inequalities, policies should be universal in principle, paying attention to the needs of disadvantaged populations.", details: "We aim to reduce inequality within and among countries. This involves empowering and promoting the social, economic and political inclusion of all, irrespective of age, sex, disability, race, ethnicity, origin, religion or economic status." },
+        { id: 11, title: "Sustainable Cities", color: "bg-orange-400", icon: Building2, desc: "There is a need to make cities safe, inclusive, resilient and sustainable for all humanity.", details: "We work to make cities and human settlements inclusive, safe, resilient and sustainable. This includes ensuring access to safe and affordable housing, basic services, and sustainable transport systems." },
+        { id: 12, title: "Consumption", color: "bg-yellow-600", icon: Recycle, desc: "Sustainable consumption and production is about promoting resource and energy efficiency.", details: "We ensure sustainable consumption and production patterns. Our goals include substantially reducing waste generation through prevention, reduction, recycling and reuse." },
+        { id: 13, title: "Climate Action", color: "bg-green-700", icon: Globe, desc: "Climate change is a global challenge that does not respect national borders.", details: "We take urgent action to combat climate change and its impacts. This involves strengthening resilience to climate-related hazards and integrating climate change measures into policies, strategies and planning." },
+        { id: 14, title: "Life Below Water", color: "bg-blue-500", icon: Fish, desc: "Our oceans drive global systems that make the Earth habitable for humankind.", details: "We conserve and sustainably use the oceans, seas and marine resources. We aim to prevent and significantly reduce marine pollution of all kinds and addressing ocean acidification." },
+        { id: 15, title: "Life on Land", color: "bg-green-600", icon: TreePine, desc: "Deforestation and desertification are major challenges to sustainable development.", details: "We protect, restore and promote sustainable use of terrestrial ecosystems. We combat desertification, halt and reverse land degradation and halt biodiversity loss." },
+        { id: 16, title: "Peace & Justice", color: "bg-blue-700", icon: Gavel, desc: "Peace, stability, human rights and effective governance are important pathways for development.", details: "We promote peaceful and inclusive societies for sustainable development, provide access to justice for all and build effective, accountable and inclusive institutions at all levels." },
+        { id: 17, title: "Partnerships", color: "bg-blue-900", icon: Handshake, desc: "The SDGs can only be realized with strong global partnerships and cooperation.", details: "We strengthen the means of implementation and revitalize the Global Partnership for Sustainable Development. This includes enhancing global macroeconomic stability and policy coordination." },
     ];
 
     return (
@@ -84,12 +96,26 @@ const MainPage = () => {
 
             {/* Navbar - Academic Header Style */}
             <nav className={`fixed top-0 w-full z-50 transition-all duration-300 border-b border-gray-100 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm py-3' : 'bg-white py-5'}`}>
-                <div className="max-w-[1400px] mx-auto px-6 flex justify-between items-center">
+                <div className="w-full px-12 flex justify-between items-center relative">
                     <div className="flex items-center gap-4 cursor-pointer" onClick={() => navigate('/')}>
                         <div className="leading-tight text-slate-900">
                             <div className="font-serif font-bold text-2xl tracking-tight">JECRC Center for SDG's</div>
                             <div className="text-[11px] font-sans font-bold uppercase tracking-[0.2em] text-[#DE1819]">Center for Sustainable Development Goals</div>
                         </div>
+                    </div>
+                    {/* Centered Dual Logo */}
+                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer flex items-center gap-5" onClick={() => navigate('/')}>
+                        <img
+                            src="/images/jecrc_university_logo.jpg"
+                            alt="JECRC University"
+                            className="h-16 object-contain"
+                        />
+                        <div className="h-12 w-[2px] bg-black/80 rounded-full"></div>
+                        <img
+                            src="/images/jcs_logo_header.png"
+                            alt="JCS"
+                            className="h-24 object-contain"
+                        />
                     </div>
                     <div className="flex items-center gap-10">
                         <div className="hidden md:flex gap-8 text-[17px] font-bold uppercase tracking-wider text-[#292929]">
@@ -137,18 +163,40 @@ const MainPage = () => {
                         className="flex flex-col gap-24"
                     >
                         {/* 1. Introduction & Vision Split */}
-                        <div className="grid lg:grid-cols-12 gap-16 items-start">
-                            <motion.div variants={fadeInUp} className="lg:col-span-12 mb-8">
+                        {/* 1. Introduction & Vision Split */}
+                        <div className="grid lg:grid-cols-12 gap-8 items-center">
+                            <motion.div variants={fadeInUp} className="lg:col-span-7 mb-8 lg:mb-0">
                                 <div className="w-20 h-1.5 bg-[#DE1819] mb-8"></div>
-                                <h2 className="text-5xl md:text-6xl font-serif font-bold text-[#292929] leading-[1.1] mb-8 max-w-4xl">
+                                <h2 className="text-5xl md:text-6xl font-serif font-bold text-[#292929] leading-[1.1] mb-8">
                                     JECRC Center for SDG's (JCS)
                                 </h2>
-                                <p className="text-xl text-slate-600 leading-relaxed max-w-5xl font-light">
+                                <p className="text-xl text-slate-600 leading-relaxed font-light">
                                     A dedicated initiative of JECRC University focused on promoting sustainable development, environmental responsibility, and socially conscious leadership.
                                     <span className="block mt-4 font-normal text-slate-800">
                                         JCS acts as a catalyst for awareness, action, and innovation by integrating sustainability into education, campus life, and community engagement.
                                     </span>
                                 </p>
+                            </motion.div>
+
+                            {/* Logo Placement */}
+                            <motion.div
+                                variants={fadeInUp}
+                                className="lg:col-span-5 flex justify-center lg:justify-end relative"
+                            >
+                                <div className="relative z-10 p-8">
+                                    <motion.div
+                                        animate={{ scale: [1, 1.15, 1], opacity: [0.5, 0.8, 0.5] }}
+                                        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+                                        className="absolute inset-0 bg-gradient-to-tr from-blue-50 to-emerald-50 rounded-full blur-[60px]"
+                                    ></motion.div>
+                                    <motion.img
+                                        variants={float}
+                                        animate="animate"
+                                        src="/images/jcs_logo_large.png"
+                                        alt="JCS Official Logo"
+                                        className="w-full max-w-[450px] object-contain drop-shadow-xl relative z-10"
+                                    />
+                                </div>
                             </motion.div>
                         </div>
 
@@ -369,7 +417,16 @@ const MainPage = () => {
                             className={`${sdg.color} text-white p-6 rounded-none shadow-sm cursor-pointer flex flex-col justify-between h-52 relative overflow-hidden group hover:shadow-2xl transition-all duration-300`}
                         >
                             <div className="absolute top-2 right-4 opacity-20 font-serif font-bold text-6xl group-hover:scale-125 transition-transform duration-500">{sdg.id}</div>
-                            <div className="font-bold text-xl relative z-10">{sdg.id}</div>
+
+                            <div className="relative z-10">
+                                <sdg.icon
+                                    size={40}
+                                    className="text-white/90 mb-2 group-hover:scale-110 group-hover:text-white transition-all duration-300"
+                                    strokeWidth={1.5}
+                                />
+                                <div className="font-bold text-xl">{sdg.id}</div>
+                            </div>
+
                             <div className="relative z-10">
                                 <h3 className="font-bold leading-tight text-sm opacity-95">{sdg.title}</h3>
                                 <div className="h-[2px] w-0 bg-white mt-3 group-hover:w-8 transition-all duration-500"></div>

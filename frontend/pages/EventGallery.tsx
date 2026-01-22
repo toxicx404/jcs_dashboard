@@ -48,7 +48,7 @@ const EventGallery = ({ myEventsOnly = false }) => {
     }
 
     // Sort by date descending
-    displayEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    displayEvents.sort((a, b) => new Date(b.fromDate).getTime() - new Date(a.fromDate).getTime());
 
     const getStatusColor = (status: string) => {
         switch (status) {
@@ -191,7 +191,7 @@ const EventGallery = ({ myEventsOnly = false }) => {
                                         {event.type}
                                     </span>
                                     <span className="text-xs text-muted flex items-center">
-                                        <Calendar size={12} className="mr-1" /> {event.date}
+                                        <Calendar size={12} className="mr-1" /> {event.fromDate === event.toDate ? event.fromDate : `${event.fromDate} - ${event.toDate}`}
                                     </span>
                                 </div>
 
@@ -257,7 +257,9 @@ const EventGallery = ({ myEventsOnly = false }) => {
                                     </div>
                                     <div>
                                         <p className="text-xs text-muted font-bold uppercase">Date</p>
-                                        <p className="font-semibold text-main">{selectedEvent.date}</p>
+                                        <p className="font-semibold text-main">
+                                            {selectedEvent.fromDate === selectedEvent.toDate ? selectedEvent.fromDate : `${selectedEvent.fromDate} to ${selectedEvent.toDate}`}
+                                        </p>
                                     </div>
                                 </div>
                                 <div className="flex items-center">
@@ -311,12 +313,21 @@ const EventGallery = ({ myEventsOnly = false }) => {
                                                     />
                                                 </div>
                                                 <div>
-                                                    <label className="block text-sm font-bold text-main mb-1">Date</label>
+                                                    <label className="block text-sm font-bold text-main mb-1">From Date</label>
                                                     <input
                                                         type="date"
                                                         className="w-full p-2 rounded-lg border border-border bg-page text-main"
-                                                        value={editForm.date}
-                                                        onChange={e => setEditForm({ ...editForm, date: e.target.value })}
+                                                        value={editForm.fromDate}
+                                                        onChange={e => setEditForm({ ...editForm, fromDate: e.target.value })}
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-bold text-main mb-1">To Date</label>
+                                                    <input
+                                                        type="date"
+                                                        className="w-full p-2 rounded-lg border border-border bg-page text-main"
+                                                        value={editForm.toDate}
+                                                        onChange={e => setEditForm({ ...editForm, toDate: e.target.value })}
                                                     />
                                                 </div>
                                             </div>

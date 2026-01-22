@@ -243,7 +243,9 @@ const Reports = () => {
                   <tr key={event.id} className="hover:bg-page transition-colors cursor-pointer" onClick={() => setSelectedEvent(event)}>
                     <td className="px-6 py-4 max-w-xs">
                       <p className="font-bold text-main truncate" title={event.title}>{event.title}</p>
-                      <p className="text-xs text-muted">{event.date} • {event.type}</p>
+                      <p className="text-xs text-muted">
+                        {event.fromDate === event.toDate ? event.fromDate : `${event.fromDate} - ${event.toDate}`} • {event.type}
+                      </p>
                     </td>
                     <td className="px-6 py-4 text-main">{event.departmentName}</td>
                     <td className="px-6 py-4">
@@ -360,7 +362,9 @@ const Reports = () => {
                   </div>
                   <div>
                     <p className="text-xs text-muted font-bold uppercase">Date</p>
-                    <p className="font-semibold text-main">{selectedEvent.date}</p>
+                    <p className="font-semibold text-main">
+                      {selectedEvent.fromDate === selectedEvent.toDate ? selectedEvent.fromDate : `${selectedEvent.fromDate} to ${selectedEvent.toDate}`}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center">

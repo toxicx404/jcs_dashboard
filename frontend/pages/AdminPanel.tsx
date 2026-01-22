@@ -11,7 +11,7 @@ const AdminPanel = () => {
 
     // We now use all events for grading, filtered by those needing attention (credits === 0).
     // Sorting by date descending by default
-    const allEventsSorted = events.filter(e => e.credits === 0).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    const allEventsSorted = events.filter(e => e.credits === 0).sort((a, b) => new Date(b.fromDate).getTime() - new Date(a.fromDate).getTime());
 
     // Tabs state - Default to Monitor for overview
     const [activeTab, setActiveTab] = useState('monitor');
@@ -415,7 +415,7 @@ const AdminPanel = () => {
                                                         <div className="flex-1 w-full min-w-0">
                                                             <div className="flex flex-wrap items-center gap-2 mb-2">
                                                                 <span className="text-xs font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-700 uppercase dark:bg-blue-900/40 dark:text-blue-300">{event.type}</span>
-                                                                <span className="text-xs text-muted flex items-center"><Calendar size={12} className="mr-1" /> {event.date}</span>
+                                                                <span className="text-xs text-muted flex items-center"><Calendar size={12} className="mr-1" /> {event.fromDate}</span>
                                                             </div>
                                                             <h3 className="text-lg font-bold text-main truncate">{event.title}</h3>
                                                             <p className="text-sm text-brand-600 font-medium mb-2 truncate">{event.departmentName}</p>

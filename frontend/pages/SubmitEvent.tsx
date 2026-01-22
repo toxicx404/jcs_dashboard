@@ -13,7 +13,8 @@ const SubmitEvent = () => {
 
     const [formData, setFormData] = useState({
         title: '',
-        date: '',
+        fromDate: '',
+        toDate: '',
         type: 'Awareness',
         description: '',
         actionsTaken: '',
@@ -84,8 +85,12 @@ const SubmitEvent = () => {
             addToast("Please select at least one SDG", 'error');
             return;
         }
-        if (new Date(formData.date) < new Date(minDate)) {
-            addToast("Event date cannot be older than 1 month", 'error');
+        if (new Date(formData.fromDate) < new Date(minDate)) {
+            addToast("From Date cannot be older than 1 month", 'error');
+            return;
+        }
+        if (new Date(formData.toDate) < new Date(formData.fromDate)) {
+            addToast("To Date cannot be before From Date", 'error');
             return;
         }
 
@@ -197,19 +202,34 @@ const SubmitEvent = () => {
                             />
                         </div>
 
-                        <div>
-                            <label className={labelClass}>Date <span className="text-red-500">*</span></label>
-                            <input
-                                required
-                                type="date"
-                                name="date"
-                                min={minDate}
-                                value={formData.date}
-                                onChange={handleInputChange}
-                                className={inputClass}
-                                disabled={isSubmitting}
-                            />
-                            <p className="text-xs text-muted mt-1">Events older than 1 month cannot be submitted.</p>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className={labelClass}>From Date <span className="text-red-500">*</span></label>
+                                <input
+                                    required
+                                    type="date"
+                                    name="fromDate"
+                                    min={minDate}
+                                    value={formData.fromDate}
+                                    onChange={handleInputChange}
+                                    className={inputClass}
+                                    disabled={isSubmitting}
+                                />
+                            </div>
+                            <div>
+                                <label className={labelClass}>To Date <span className="text-red-500">*</span></label>
+                                <input
+                                    required
+                                    type="date"
+                                    name="toDate"
+                                    min={formData.fromDate || minDate}
+                                    value={formData.toDate}
+                                    onChange={handleInputChange}
+                                    className={inputClass}
+                                    disabled={isSubmitting}
+                                />
+                            </div>
+                            <p className="text-xs text-muted mt-1 col-span-2">Events older than 1 month cannot be submitted.</p>
                         </div>
                     </div>
 

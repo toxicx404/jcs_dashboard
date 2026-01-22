@@ -17,7 +17,8 @@ export interface Event {
   title: string;
   departmentId: string;
   departmentName: string;
-  date: string;
+  fromDate: string;
+  toDate: string;
   type: 'Awareness' | 'Implementation' | 'Innovation' | 'Research' | 'Other';
   description: string;
   participants: number;
