@@ -1,18 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-    ArrowRight, Globe, Users, Lightbulb, Target, Heart,
-    Leaf, Zap, Scale, LayoutDashboard, X, Loader2,
-    Award, Trees, Mic, Rocket, Recycle, Calendar, MapPin, CheckCircle, Smartphone
-} from 'lucide-react';
-
+import { motion, AnimatePresence } from 'framer-motion';
+import HeroSlider from '../components/HeroSlider.tsx';
+import LogoSection from '../components/LogoSection.tsx';
+import MagneticButton from '../components/ui/MagneticButton.tsx';
 import PartnerModal from '../components/PartnerModal';
+import {
+    ArrowRight, Globe, Target, Calendar,
+    Leaf, Users, Lightbulb, X,
+    Mic, Trophy, Zap, Layout, Recycle, Instagram, Linkedin, Mail, ArrowUp
+} from 'lucide-react';
 
 const MainPage = () => {
     const navigate = useNavigate();
     const [selectedSDG, setSelectedSDG] = useState<any>(null);
-    const [isNavigating, setIsNavigating] = useState(false);
     const [isPartnerModalOpen, setIsPartnerModalOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
+    const [activeTooltip, setActiveTooltip] = useState<number | null>(null);
+    const [isConnecting, setIsConnecting] = useState(false);
+
+    const handleDashboardClick = () => {
+        setIsConnecting(true);
+        setTimeout(() => {
+            navigate('/dashboard');
+            // Reset state after navigation (though component might unmount)
+            setTimeout(() => setIsConnecting(false), 500);
+        }, 2000);
+    };
+
+    // Handle scroll for navbar styling
+    useEffect(() => {
+        const handleScroll = () => setScrolled(window.scrollY > 50);
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     const scrollToSection = (id: string) => {
         const element = document.getElementById(id);
@@ -21,549 +42,869 @@ const MainPage = () => {
         }
     };
 
-    const handleNavigation = (path: string) => {
-        setIsNavigating(true);
-        setTimeout(() => {
-            navigate(path);
-        }, 1500);
+    // Animation Variants
+    const fadeInUp = {
+        hidden: { opacity: 0, y: 60 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+    };
+
+    const staggerContainer = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1
+            }
+        }
     };
 
     // SDG Data with Details
     const sdgs = [
-        { id: 1, title: "No Poverty", desc: "Ending poverty in all its forms", color: "bg-red-500", details: "Ensure significant mobilization of resources from a variety of sources to provide adequate and predictable means for developing countries." },
-        { id: 2, title: "Zero Hunger", desc: "Ensuring food security & nutrition", color: "bg-yellow-500", details: "End hunger, achieve food security and improved nutrition and promote sustainable agriculture." },
-        { id: 3, title: "Good Health", desc: "Promoting healthy lives", color: "bg-green-500", details: "Ensure healthy lives and promote well-being for all at all ages." },
-        { id: 4, title: "Quality Education", desc: "Inclusive & equitable education", color: "bg-red-600", details: "Ensure inclusive and equitable quality education and promote lifelong learning opportunities for all." },
-        { id: 5, title: "Gender Equality", desc: "Empowering women & girls", color: "bg-orange-500", details: "Achieve gender equality and empower all women and girls." },
-        { id: 6, title: "Clean Water", desc: "Sustainable water management", color: "bg-cyan-500", details: "Ensure availability and sustainable management of water and sanitation for all." },
-        { id: 7, title: "Clean Energy", desc: "Reliable sustainable energy", color: "bg-yellow-400", details: "Ensure access to affordable, reliable, sustainable and modern energy for all." },
-        { id: 8, title: "Decent Work", desc: "Inclusive growth opportunities", color: "bg-red-700", details: "Promote sustained, inclusive and sustainable economic growth, full and productive employment and decent work for all." },
-        { id: 9, title: "Innovation", desc: "Resilient infrastructure", color: "bg-orange-600", details: "Build resilient infrastructure, promote inclusive and sustainable industrialization and foster innovation." },
-        { id: 10, title: "Reduced Inequalities", desc: "Reducing inequalities", color: "bg-pink-500", details: "Reduce inequality within and among countries." },
-        { id: 11, title: "Sustainable Cities", desc: "Safe, resilient urban development", color: "bg-orange-400", details: "Make cities and human settlements inclusive, safe, resilient and sustainable." },
-        { id: 12, title: "Responsible Consumption", desc: "Efficient use of resources", color: "bg-yellow-600", details: "Ensure sustainable consumption and production patterns." },
-        { id: 13, title: "Climate Action", desc: "Urgent climate change mitigation", color: "bg-green-700", details: "Take urgent action to combat climate change and its impacts." },
-        { id: 14, title: "Life Below Water", desc: "Conserving oceans", color: "bg-blue-500", details: "Conserve and sustainably use the oceans, seas and marine resources for sustainable development." },
-        { id: 15, title: "Life on Land", desc: "Protecting terrestrial ecosystems", color: "bg-green-600", details: "Protect, restore and promote sustainable use of terrestrial ecosystems, sustainably manage forests, combat desertification, etc." },
-        { id: 16, title: "Peace & Justice", desc: "Inclusive institutions", color: "bg-blue-700", details: "Promote peaceful and inclusive societies for sustainable development, provide access to justice for all." },
-        { id: 17, title: "Partnerships", desc: "Strengthening global collaboration", color: "bg-blue-900", details: "Strengthen the means of implementation and revitalize the Global Partnership for Sustainable Development." },
+        { id: 1, title: "No Poverty", color: "bg-red-500", desc: "Eradicating poverty in all its forms remains one of the greatest challenges facing humanity. We focus on aid and resource mobilization.", details: "Our target is to ensure significant mobilization of resources from a variety of sources. We aim to implement social protection systems and ensure equal rights to economic resources, basic services, and technology for the vulnerable." },
+        { id: 2, title: "Zero Hunger", color: "bg-yellow-500", desc: "Seeking sustainable solutions to end hunger in all its forms by 2030 and to achieve food security.", details: "The goal includes ending malnutrition, doubling agricultural productivity, and ensuring sustainable food production systems. We support local drives to feed the needy and educate on nutritional standards." },
+        { id: 3, title: "Good Health", color: "bg-green-500", desc: "Ensuring healthy lives and promoting well-being for all at all ages is essential to sustainable development.", details: "We focus on efficient health financing and recruitment, development, training and retention of the health workforce. Our goal is to reduce maternal mortality, end preventable deaths of newborns, and fight communicable diseases." },
+        { id: 4, title: "Quality Education", color: "bg-red-600", desc: "Obtaining a quality education is the foundation to improving people’s lives and sustainable development.", details: "We ensure inclusive and equitable quality education and promote lifelong learning opportunities for all. This includes equal access to affordable vocational training and eliminating gender disparities in education." },
+        { id: 5, title: "Gender Equality", color: "bg-orange-500", desc: "Gender equality is not only a fundamental human right, but a necessary foundation for a peaceful, prosperous world.", details: "We work to end all forms of discrimination against all women and girls everywhere. This involves eliminating violence, harmful practices like child marriage, and ensuring full participation in leadership and decision-making." },
+        { id: 6, title: "Clean Water", color: "bg-cyan-500", desc: "Clean, accessible water for all is an essential part of the world we want to live in.", details: "We aim to ensure availability and sustainable management of water and sanitation for all. This includes achieving universal and equitable access to safe and affordable drinking water and adequate sanitation/hygiene." },
+        { id: 7, title: "Clean Energy", color: "bg-yellow-400", desc: "Energy is central to nearly every major challenge and opportunity the world faces today.", details: "Our mission is to ensure access to affordable, reliable, sustainable and modern energy for all. We promote investment in energy infrastructure and clean energy technology." },
+        { id: 8, title: "Decent Work", color: "bg-red-700", desc: "Sustainable economic growth will require societies to create the conditions that allow people to have quality jobs.", details: "We promote sustained, inclusive and sustainable economic growth, full and productive employment and decent work for all. We support entrepreneurship, creativity and innovation." },
+        { id: 9, title: "Innovation", color: "bg-orange-600", desc: "Investments in infrastructure are crucial to achieving sustainable development.", details: "Our focus is to build resilient infrastructure, promote inclusive and sustainable industrialization and foster innovation. We support domestic technology development, research and innovation in developing countries." },
+        { id: 10, title: "Reduced Inequalities", color: "bg-pink-500", desc: "To reduce inequalities, policies should be universal in principle, paying attention to the needs of disadvantaged populations.", details: "We aim to reduce inequality within and among countries. This involves empowering and promoting the social, economic and political inclusion of all, irrespective of age, sex, disability, race, ethnicity, origin, religion or economic status." },
+        { id: 11, title: "Sustainable Cities", color: "bg-orange-400", desc: "There is a need to make cities safe, inclusive, resilient and sustainable for all humanity.", details: "We work to make cities and human settlements inclusive, safe, resilient and sustainable. This includes ensuring access to safe and affordable housing, basic services, and sustainable transport systems." },
+        { id: 12, title: "Consumption", color: "bg-yellow-600", desc: "Sustainable consumption and production is about promoting resource and energy efficiency.", details: "We ensure sustainable consumption and production patterns. Our goals include substantially reducing waste generation through prevention, reduction, recycling and reuse." },
+        { id: 13, title: "Climate Action", color: "bg-green-700", desc: "Climate change is a global challenge that does not respect national borders.", details: "We take urgent action to combat climate change and its impacts. This involves strengthening resilience to climate-related hazards and integrating climate change measures into policies, strategies and planning." },
+        { id: 14, title: "Life Below Water", color: "bg-blue-500", desc: "Our oceans drive global systems that make the Earth habitable for humankind.", details: "We conserve and sustainably use the oceans, seas and marine resources. We aim to prevent and significantly reduce marine pollution of all kinds and addressing ocean acidification." },
+        { id: 15, title: "Life on Land", color: "bg-green-600", desc: "Deforestation and desertification are major challenges to sustainable development.", details: "We protect, restore and promote sustainable use of terrestrial ecosystems. We combat desertification, halt and reverse land degradation and halt biodiversity loss." },
+        { id: 16, title: "Peace & Justice", color: "bg-blue-700", desc: "Peace, stability, human rights and effective governance are important pathways for development.", details: "We promote peaceful and inclusive societies for sustainable development, provide access to justice for all and build effective, accountable and inclusive institutions at all levels." },
+        { id: 17, title: "Partnerships", color: "bg-blue-900", desc: "The SDGs can only be realized with strong global partnerships and cooperation.", details: "We strengthen the means of implementation and revitalize the Global Partnership for Sustainable Development. This includes enhancing global macroeconomic stability and policy coordination." },
     ];
 
     return (
-        <div className="min-h-screen bg-white text-slate-900 font-sans">
+        <div className="bg-[#FAFAFA] text-[#292929] font-sans selection:bg-primary-100 selection:text-primary-900 overflow-x-hidden">
 
-            {/* Loading Overlay */}
-            {isNavigating && (
-                <div className="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-md flex flex-col items-center justify-center animate-fade-in text-white">
-                    <Loader2 size={64} className="text-brand-500 animate-spin mb-6" />
-                    <h2 className="text-2xl font-bold animate-pulse">Entering JCS Dashboard...</h2>
-                    <p className="text-slate-400 mt-2">Connecting to student initiatives</p>
-                </div>
-            )}
-
-            {/* SDG Detail Modal */}
-            {selectedSDG && (
-                <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-                    <div
-                        className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
-                        onClick={() => setSelectedSDG(null)}
-                    ></div>
-                    <div className="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden animate-scale-up border border-slate-200">
-                        <div className={`${selectedSDG.color} p-8 text-white relative`}>
-                            <button
-                                onClick={() => setSelectedSDG(null)}
-                                className="absolute top-4 right-4 bg-white/20 hover:bg-white/40 p-2 rounded-full text-white transition-colors"
-                            >
-                                <X size={20} />
-                            </button>
-                            <div className="text-6xl font-black opacity-30 absolute top-4 left-4 select-none">
-                                {selectedSDG.id}
-                            </div>
-                            <div className="relative z-10 pt-4">
-                                <h3 className="text-3xl font-bold mb-2">{selectedSDG.title}</h3>
-                                <p className="font-medium opacity-90">{selectedSDG.desc}</p>
-                            </div>
+            {/* Navbar - Academic Header Style */}
+            <nav className={`fixed top-0 w-full z-50 transition-all duration-300 border-b border-gray-100 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm py-3' : 'bg-white py-5'}`}>
+                <div className="max-w-[1400px] mx-auto px-6 flex justify-between items-center">
+                    <div className="flex items-center gap-4 cursor-pointer" onClick={() => navigate('/')}>
+                        <div className="leading-tight text-slate-900">
+                            <div className="font-serif font-bold text-2xl tracking-tight">JECRC Center for SDG's</div>
+                            <div className="text-[11px] font-sans font-bold uppercase tracking-[0.2em] text-[#DE1819]">Center for Sustainable Development Goals</div>
                         </div>
-                        <div className="p-8">
-                            <h4 className="font-bold text-slate-900 mb-3 text-lg">Goal Objectives</h4>
-                            <p className="text-slate-600 leading-relaxed text-lg">
-                                {selectedSDG.details}
-                            </p>
-                            <div className="mt-8 pt-6 border-t border-slate-100 flex justify-end">
+                    </div>
+                    <div className="flex items-center gap-10">
+                        <div className="hidden md:flex gap-8 text-[17px] font-bold uppercase tracking-wider text-[#292929]">
+                            {['About JCS', 'Our Goals', 'Initiatives', 'Events'].map((item) => (
                                 <button
-                                    onClick={() => setSelectedSDG(null)}
-                                    className="px-6 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg transition-colors"
+                                    key={item}
+                                    onClick={() => scrollToSection(item.toLowerCase().replace(' ', '-').replace('our-goals', 'sdgs'))}
+                                    className="hover:text-[#DE1819] transition-colors relative group"
                                 >
-                                    Close
+                                    {item}
+                                    <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-[#DE1819] transition-all duration-300 group-hover:w-full"></span>
                                 </button>
-                            </div>
+                            ))}
                         </div>
+                        <MagneticButton
+                            onClick={handleDashboardClick}
+                            className="px-8 py-3 bg-[#DE1819] text-white font-bold text-sm tracking-widest hover:bg-[#b01314] transition-all shadow-lg hover:shadow-red-500/30 rounded-none"
+                        >
+                            DASHBOARD
+                        </MagneticButton>
                     </div>
-                </div>
-            )}
-
-            {/* Navigation Bar */}
-            <nav className="fixed top-0 w-full bg-slate-900 text-white z-50 py-4 px-6 shadow-lg flex justify-between items-center bg-opacity-95 backdrop-blur-sm">
-                <div className="text-xl font-bold tracking-tight">
-                    JECRC Center for Sustainability <span className="text-brand-400 font-normal opacity-80">| JCS</span>
-                </div>
-                <div className="flex items-center gap-6">
-                    <div className="hidden md:flex gap-6 text-sm font-medium text-slate-300">
-                        <button onClick={() => scrollToSection('about')} className="hover:text-brand-400 transition-colors">Our Goals</button>
-                        <button onClick={() => scrollToSection('sdgs')} className="hover:text-brand-400 transition-colors">The 17 SDGs</button>
-                        <button onClick={() => scrollToSection('initiatives')} className="hover:text-brand-400 transition-colors">Initiatives</button>
-                        <button onClick={() => scrollToSection('contact')} className="hover:text-brand-400 transition-colors">Get Involved</button>
-                    </div>
-                    <button
-                        onClick={() => handleNavigation('/dashboard')}
-                        className="bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold py-2 px-4 rounded-lg transition-all flex items-center gap-2 shadow-sm"
-                    >
-                        <LayoutDashboard size={16} />
-                        Dashboard
-                    </button>
                 </div>
             </nav>
 
             {/* 1. Hero Section */}
-            <header className="relative pt-32 pb-24 px-6 md:px-12 lg:px-24 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white overflow-hidden">
-                <div className="absolute top-0 right-0 w-1/3 h-full bg-brand-500/10 blur-[100px] rounded-full"></div>
-                <div className="relative z-10 max-w-4xl">
-                    <div className="inline-block px-3 py-1 bg-brand-500/20 text-brand-300 text-xs font-bold rounded-full mb-6 border border-brand-500/30">
-                        ESTABLISHED 2025
-                    </div>
-                    <h1 className="text-5xl md:text-7xl font-extrabold leading-tight mb-8 tracking-tight">
-                        Driving <span className="text-brand-400">Sustainable Change</span> <br />
-                        & Global Impact.
-                    </h1>
-                    <p className="text-xl text-slate-300 max-w-2xl mb-10 leading-relaxed">
-                        A student-led core team initiative at JECRC University focused on sustainability, awareness, and taking action for a better future.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4">
-                        <button
-                            onClick={() => scrollToSection('initiatives')}
-                            className="px-8 py-4 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-lg shadow-brand-500/30 transition-all transform active:scale-95 flex items-center gap-2"
-                        >
-                            Explore Initiatives <ArrowRight size={20} />
-                        </button>
-                        <button
-                            onClick={() => scrollToSection('contact')}
-                            className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl border border-white/10 backdrop-blur-sm transition-all flex items-center gap-2"
-                        >
-                            Get Involved
-                        </button>
-                    </div>
-                </div>
-            </header>
+            <div className="mt-[80px]">
+                <HeroSlider />
+            </div>
 
-            {/* 2. About Section */}
-            <section id="about" className="py-24 px-6 md:px-12 lg:px-24 bg-slate-50">
-                <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
-                    <div>
-                        <h2 className="text-4xl font-bold text-slate-900 mb-6">Building Responsible Global Citizens</h2>
-                        <p className="text-slate-600 text-lg mb-6 leading-relaxed">
-                            The Center for SDGs promotes sustainability and SDG awareness across JECRC University. We work on all 17 SDGs with a strong focus on education, environment, and community.
-                        </p>
-                        <div className="space-y-4">
-                            <div className="flex items-start gap-4">
-                                <div className="p-2 bg-blue-100 text-blue-600 rounded-lg shrink-0 mt-1"><Globe size={20} /></div>
-                                <div>
-                                    <h3 className="font-bold text-slate-900">Our Vision</h3>
-                                    <p className="text-slate-500">To build responsible global citizens driving sustainable change in their communities.</p>
-                                </div>
-                            </div>
-                            <div className="flex items-start gap-4">
-                                <div className="p-2 bg-green-100 text-green-600 rounded-lg shrink-0 mt-1"><Target size={20} /></div>
-                                <div>
-                                    <h3 className="font-bold text-slate-900">Our Mission</h3>
-                                    <p className="text-slate-500">Integrate SDGs into academics, projects, and community action through student leadership.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="relative">
-                        <div className="absolute inset-0 bg-brand-500 rounded-3xl transform rotate-3 opacity-20"></div>
-                        <div className="relative bg-white p-8 rounded-3xl shadow-xl border border-slate-100">
-                            <h3 className="text-2xl font-bold mb-6">Core Focus Areas</h3>
-                            <ul className="space-y-4">
-                                <li className="flex items-center gap-3 text-slate-700">
-                                    <div className="w-2 h-2 bg-brand-500 rounded-full"></div>
-                                    Student-led leadership & action
-                                </li>
-                                <li className="flex items-center gap-3 text-slate-700">
-                                    <div className="w-2 h-2 bg-brand-500 rounded-full"></div>
-                                    Research, innovation & outreach
-                                </li>
-                                <li className="flex items-center gap-3 text-slate-700">
-                                    <div className="w-2 h-2 bg-brand-500 rounded-full"></div>
-                                    Community engagement
-                                </li>
-                                <li className="flex items-center gap-3 text-slate-700">
-                                    <div className="w-2 h-2 bg-brand-500 rounded-full"></div>
-                                    Global partnerships
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            {/* 2. Logo Section */}
+            <LogoSection />
 
-            {/* 3. The 17 SDGs */}
-            <section id="sdgs" className="py-24 px-6 md:px-12 lg:px-24 bg-white">
-                <div className="text-center max-w-3xl mx-auto mb-16">
-                    <h2 className="text-4xl font-bold text-slate-900 mb-4">The 17 Sustainable Development Goals</h2>
-                    <p className="text-slate-500 text-lg">
-                        Click on any goal to learn more about our commitment. We are dedicated to advancing all 17 goals by 2030.
-                    </p>
-                </div>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-                    {sdgs.map((sdg) => (
-                        <div
-                            key={sdg.id}
-                            onClick={() => setSelectedSDG(sdg)}
-                            className={`${sdg.color} text-white p-6 rounded-xl shadow-md hover:shadow-2xl hover:-translate-y-2 cursor-pointer transition-all duration-300 flex flex-col justify-between h-52 group active:scale-95`}
-                        >
-                            <div className="text-4xl font-black opacity-30 group-hover:opacity-100 transition-opacity">{sdg.id}</div>
-                            <div>
-                                <h3 className="font-bold leading-tight mb-2 text-lg">{sdg.title}</h3>
-                                <p className="text-xs opacity-90 leading-tight group-hover:opacity-100">{sdg.desc}</p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </section>
+            {/* 3. About Section - Expanded & Detailed */}
+            {/* 3. About Section - Expanded & Detailed */}
+            <section id="about" className="py-12 px-6 md:px-12 lg:px-24 bg-white/30 backdrop-blur-lg border-t border-white/20 relative overflow-hidden">
+                {/* Decorative Background Element */}
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gray-200/50 rounded-full blur-[100px] -mr-32 -mt-32 pointer-events-none"></div>
 
-            {/* 4. SDGs at JECRC */}
-            <section id="initiatives" className="py-24 px-6 md:px-12 lg:px-24 bg-slate-900 text-white">
-                <div className="max-w-7xl mx-auto">
-                    <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-                        <div>
-                            <h2 className="text-4xl font-bold mb-4">SDGs at JECRC University</h2>
-                            <p className="text-slate-400 text-lg max-w-xl">
-                                Our campus is a living lab for sustainability. Here is how we are turning goals into action.
-                            </p>
-                        </div>
-                        <button onClick={() => handleNavigation('/gallery')} className="text-brand-400 font-bold hover:text-white transition-colors flex items-center gap-2">
-                            View All Events <ArrowRight size={18} />
-                        </button>
-                    </div>
-
-                    <div className="grid md:grid-cols-3 gap-8">
-                        {/* Card 1 */}
-                        <div className="bg-slate-800 p-8 rounded-2xl border border-slate-700 hover:border-brand-500/50 transition-colors">
-                            <div className="w-12 h-12 bg-green-900/50 text-green-400 rounded-xl flex items-center justify-center mb-6">
-                                <Leaf size={24} />
-                            </div>
-                            <h3 className="text-xl font-bold mb-3">Green Campus Drives</h3>
-                            <p className="text-slate-400">Regular plantation drives, waste management audits, and clean energy awareness campaigns across campus.</p>
-                        </div>
-                        {/* Card 2 */}
-                        <div className="bg-slate-800 p-8 rounded-2xl border border-slate-700 hover:border-brand-500/50 transition-colors">
-                            <div className="w-12 h-12 bg-blue-900/50 text-blue-400 rounded-xl flex items-center justify-center mb-6">
-                                <Users size={24} />
-                            </div>
-                            <h3 className="text-xl font-bold mb-3">Student Leadership</h3>
-                            <p className="text-slate-400">Workshops, seminars, and outreach programs led by student volunteers to educate peers and the community.</p>
-                        </div>
-                        {/* Card 3 */}
-                        <div className="bg-slate-800 p-8 rounded-2xl border border-slate-700 hover:border-brand-500/50 transition-colors">
-                            <div className="w-12 h-12 bg-purple-900/50 text-purple-400 rounded-xl flex items-center justify-center mb-6">
-                                <Lightbulb size={24} />
-                            </div>
-                            <h3 className="text-xl font-bold mb-3">Innovation & Research</h3>
-                            <p className="text-slate-400">Supporting renewable energy research, sustainable tech innovation, and academic projects aligned with SDGs.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* 5. Collaborations */}
-            <section className="py-24 px-6 md:px-12 lg:px-24 bg-brand-50 border-y border-brand-100">
-                <div className="max-w-4xl mx-auto text-center">
-                    <h2 className="text-3xl font-bold text-slate-900 mb-8">Collaborations & Partnerships</h2>
-                    <p className="text-slate-600 text-lg mb-10">
-                        We collaborate with NGOs, institutions, and industry leaders to build strong networks for sustainability projects. Use our platform to connect and create impact.
-                    </p>
-                    <div className="flex flex-wrap justify-center gap-4 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
-                        {/* Placeholders for logos - simplified as text for now */}
-                        <div className="bg-white px-6 py-3 rounded-lg font-bold text-slate-400 shadow-sm">Global NGO Network</div>
-                        <div className="bg-white px-6 py-3 rounded-lg font-bold text-slate-400 shadow-sm">Local Civic Bodies</div>
-                        <div className="bg-white px-6 py-3 rounded-lg font-bold text-slate-400 shadow-sm">Industry Tech Partners</div>
-                        <div className="bg-white px-6 py-3 rounded-lg font-bold text-slate-400 shadow-sm">Educational Institutes</div>
-                    </div>
-                </div>
-            </section>
-
-            {/* 6. About Us - Detailed */}
-            <section className="py-24 px-6 md:px-12 lg:px-24 bg-white relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-64 h-64 bg-slate-100 rounded-full filter blur-[50px] opacity-60 -translate-x-1/2 -translate-y-1/2"></div>
-                <div className="max-w-5xl mx-auto relative z-10">
-                    <div className="text-center mb-16">
-                        <h2 className="text-sm font-bold tracking-widest text-brand-600 uppercase mb-3">Who We Are</h2>
-                        <h3 className="text-4xl md:text-5xl font-black text-slate-900 mb-6 font-display">
-                            Where Ideas Grow Into <span className="text-brand-600">Action</span>
-                        </h3>
-                        <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
-                            The <span className="font-bold text-slate-800">JECRC Centre for Sustainable Development Goals (JCS)</span> is a
-                            student-driven initiative dedicated to promoting environmental awareness and sustainable development on campus.
-                        </p>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-12 items-center">
-                        <div className="bg-slate-50 p-8 rounded-3xl border border-slate-100 shadow-sm relative group hover:shadow-md transition-all">
-                            <div className="absolute top-4 right-4 text-slate-200 group-hover:text-brand-100 transition-colors">
-                                <Globe size={120} strokeWidth={0.5} />
-                            </div>
-                            <h4 className="text-2xl font-bold text-slate-900 mb-4 relative z-10">Practical Action</h4>
-                            <p className="text-slate-600 relative z-10 leading-relaxed">
-                                Guided by the UN Sustainable Development Goals (SDGs), JCS focuses on practical action through projects,
-                                collaborations, and campaigns that create real impact. We move beyond theory to implement tangible solutions.
-                            </p>
-                        </div>
-                        <div className="space-y-6">
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center shrink-0">
-                                    <Leaf size={24} />
-                                </div>
-                                <div>
-                                    <h5 className="font-bold text-slate-900 text-lg">Environmental Awareness</h5>
-                                    <p className="text-slate-500">Promoting eco-conscious habits across campus.</p>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center shrink-0">
-                                    <Users size={24} />
-                                </div>
-                                <div>
-                                    <h5 className="font-bold text-slate-900 text-lg">Student-Driven</h5>
-                                    <p className="text-slate-500">A community of changemakers leading the way.</p>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center shrink-0">
-                                    <Rocket size={24} />
-                                </div>
-                                <div>
-                                    <h5 className="font-bold text-slate-900 text-lg">Real Impact</h5>
-                                    <p className="text-slate-500">Projects that make a measurable difference.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* 7. Generation Green Campaign */}
-            <section className="py-24 px-6 md:px-12 lg:px-24 bg-slate-900 text-white overflow-hidden relative">
-                {/* Background decorations */}
-                <div className="absolute top-1/4 right-0 w-96 h-96 bg-green-600/20 rounded-full filter blur-[100px]"></div>
-                <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-600/20 rounded-full filter blur-[80px]"></div>
-
-                <div className="max-w-7xl mx-auto relative z-10">
-                    <div className="flex flex-col md:flex-row gap-12 mb-16 items-start">
-                        <div className="md:w-1/2">
-                            <div className="inline-block px-3 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded-full mb-4 border border-green-500/30">
-                                AWARD WINNING CAMPAIGN
-                            </div>
-                            <h2 className="text-4xl md:text-5xl font-black mb-6 leading-tight">
-                                Generation <span className="text-green-400">Green</span> Campaign
-                            </h2>
-                            <p className="text-slate-300 text-lg leading-relaxed mb-6">
-                                It began with the "Generation Green Campaign" where we were bestowed with the title of
-                                <span className="text-white font-bold"> "ECO Conscious Institution"</span> in Rajasthan.
-                            </p>
-                            <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-white/10">
-                                <div className="flex items-start gap-4">
-                                    <Award className="text-yellow-400 shrink-0 mt-1" size={32} />
-                                    <div>
-                                        <h4 className="font-bold text-lg mb-1">Nodal Centre for Sustainable Initiatives</h4>
-                                        <p className="text-sm text-slate-400">
-                                            Recognized by Ministry of Education, AICTE, NITI Aayog, Oppo India and 1M1B Foundation.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="md:w-1/2 grid grid-cols-2 gap-4">
-                            <div className="bg-slate-800 p-6 rounded-2xl border border-slate-700 hover:border-green-500/50 transition-colors">
-                                <div className="text-3xl font-black text-white mb-1">21</div>
-                                <div className="text-sm text-slate-400">AICTE Authorised Interns team</div>
-                            </div>
-                            <div className="bg-slate-800 p-6 rounded-2xl border border-slate-700 hover:border-green-500/50 transition-colors">
-                                <div className="text-3xl font-black text-green-400 mb-1">250 kg</div>
-                                <div className="text-sm text-slate-400">E-waste collected</div>
-                            </div>
-                            <div className="bg-slate-800 p-6 rounded-2xl border border-slate-700 hover:border-green-500/50 transition-colors">
-                                <div className="text-3xl font-black text-blue-400 mb-1">27,000+</div>
-                                <div className="text-sm text-slate-400">Students inspired</div>
-                            </div>
-                            <div className="bg-slate-800 p-6 rounded-2xl border border-slate-700 hover:border-green-500/50 transition-colors">
-                                <div className="text-3xl font-black text-yellow-400 mb-1">10,000+</div>
-                                <div className="text-sm text-slate-400">Green pledges taken</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Outreach Strip */}
-                    <div className="grid md:grid-cols-4 gap-6 pt-8 border-t border-slate-800">
-                        <div className="flex items-center gap-3">
-                            <MapPin className="text-red-400" />
-                            <span className="font-medium">40+ Schools Reached</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <Smartphone className="text-blue-400" />
-                            <span className="font-medium">Social Media & Podcasts</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <Mic className="text-purple-400" />
-                            <span className="font-medium">Street Plays Performed</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <CheckCircle className="text-green-400" />
-                            <span className="font-medium">Green Ambassadors Appointed</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* 8. ReSpire '25 Flagship Event */}
-            <section className="py-24 px-6 md:px-12 lg:px-24 bg-gradient-to-b from-slate-50 to-white">
-                <div className="max-w-7xl mx-auto">
-                    <div className="text-center mb-16">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-brand-100 text-brand-700 rounded-full font-bold text-sm mb-6">
-                            <Calendar size={16} /> Flagship Event
-                        </div>
-                        <h2 className="text-5xl md:text-7xl font-black text-slate-900 mb-6 tracking-tight">
-                            ReSpire <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-green-600">'25</span>
-                        </h2>
-                        <p className="text-xl text-slate-600 max-w-3xl mx-auto">
-                            A 2-day flagship sustainability summit that successfully brought together the entire university.
-                            Designed to move beyond awareness to inter-departmental action.
-                        </p>
-                    </div>
-
-                    {/* Stats Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20 text-center">
-                        <div className="p-8 bg-white rounded-3xl shadow-lg border border-slate-100">
-                            <div className="text-5xl font-black text-slate-900 mb-2">300+</div>
-                            <div className="text-slate-500 font-medium">Students & Faculty Engaged</div>
-                            <div className="text-xs text-slate-400 mt-2 px-4">From Hotel Mgmt, Law, Engineering & more</div>
-                        </div>
-                        <div className="p-8 bg-brand-600 text-white rounded-3xl shadow-xl transform scale-105">
-                            <div className="text-5xl font-black mb-2">4</div>
-                            <div className="font-bold text-lg">Distinguished Keynote Speakers</div>
-                            <div className="text-xs opacity-80 mt-2">Including UN Representatives</div>
-                        </div>
-                        <div className="p-8 bg-white rounded-3xl shadow-lg border border-slate-100">
-                            <div className="text-5xl font-black text-slate-900 mb-2">₹20L</div>
-                            <div className="text-slate-500 font-medium">Green Startup Fund Announced</div>
-                            <div className="text-xs text-slate-400 mt-2">To support student innovation</div>
-                        </div>
-                    </div>
-
-                    {/* Key Outcomes */}
-                    <div className="grid md:grid-cols-2 gap-16">
-                        <div>
-                            <h3 className="text-3xl font-bold mb-8">Major Outcomes</h3>
-                            <div className="space-y-6">
-                                <div className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-sm border border-slate-100">
-                                    <div className="p-3 bg-green-100 text-green-700 rounded-lg">
-                                        <Trees size={24} />
-                                    </div>
-                                    <div>
-                                        <h4 className="font-bold text-lg">5 Lakh Trees Pledge</h4>
-                                        <p className="text-slate-600 text-sm">A massive pledge to plant 5 Lakh trees across Jaipur, positioning JCS as a leader in city-wide climate action (SDG 13).</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-sm border border-slate-100">
-                                    <div className="p-3 bg-blue-100 text-blue-700 rounded-lg">
-                                        <Lightbulb size={24} />
-                                    </div>
-                                    <div>
-                                        <h4 className="font-bold text-lg">SDG Lab & Innovation</h4>
-                                        <p className="text-slate-600 text-sm">Official announcement of a dedicated "SDG Lab" for sustainable innovation by Vice Chairperson Shri Arpit Agarwal.</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-sm border border-slate-100">
-                                    <div className="p-3 bg-yellow-100 text-yellow-700 rounded-lg">
-                                        <Award size={24} />
-                                    </div>
-                                    <div>
-                                        <h4 className="font-bold text-lg">Scholarships & Academic Credits</h4>
-                                        <p className="text-slate-600 text-sm">New policies to award academic credits and scholarships for practical work in sustainability.</p>
-                                    </div>
-                                </div>
-                            </div>
+                <div className="max-w-[1400px] mx-auto relative z-10">
+                    <motion.div
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                        variants={staggerContainer}
+                        className="flex flex-col gap-24"
+                    >
+                        {/* 1. Introduction & Vision Split */}
+                        <div className="grid lg:grid-cols-12 gap-16 items-start">
+                            <motion.div variants={fadeInUp} className="lg:col-span-12 mb-8">
+                                <div className="w-20 h-1.5 bg-[#DE1819] mb-8"></div>
+                                <h2 className="text-5xl md:text-6xl font-serif font-bold text-[#292929] leading-[1.1] mb-8 max-w-4xl">
+                                    JECRC Center for SDG's (JCS)
+                                </h2>
+                                <p className="text-xl text-slate-600 leading-relaxed max-w-5xl font-light">
+                                    A dedicated initiative of JECRC University focused on promoting sustainable development, environmental responsibility, and socially conscious leadership.
+                                    <span className="block mt-4 font-normal text-slate-800">
+                                        JCS acts as a catalyst for awareness, action, and innovation by integrating sustainability into education, campus life, and community engagement.
+                                    </span>
+                                </p>
+                            </motion.div>
                         </div>
 
-                        <div className="bg-slate-50 rounded-3xl p-8 border border-slate-100">
-                            <h3 className="text-2xl font-bold mb-6">Distinguished Speakers</h3>
-                            <div className="space-y-4">
+                        {/* 2. Vision & Mission Cards */}
+                        <div className="grid md:grid-cols-2 gap-8">
+                            {/* Vision - Dark Card */}
+                            <motion.div variants={fadeInUp} className="bg-[#292929] p-12 rounded-[2rem] text-white relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 p-32 bg-[#DE1819] opacity-10 rounded-full blur-3xl -mr-16 -mt-16 transition-all duration-700 group-hover:scale-150"></div>
+                                <Globe className="text-[#DE1819] mb-8" size={40} />
+                                <h3 className="text-3xl font-serif font-bold mb-6">Our Vision</h3>
+                                <p className="text-xl leading-relaxed opacity-90 font-light border-l-4 border-[#DE1819] pl-6 italic">
+                                    "To build a sustainable future by empowering youth with knowledge, responsibility, and leadership aligned with global sustainability goals."
+                                </p>
+                            </motion.div>
+
+                            {/* Mission - Light Card */}
+                            <motion.div variants={fadeInUp} className="bg-white p-12 rounded-[2rem] border border-gray-100 shadow-xl shadow-gray-100/50">
+                                <Target className="text-[#DE1819] mb-8" size={40} />
+                                <h3 className="text-3xl font-serif font-bold text-[#292929] mb-6">Our Mission</h3>
+                                <ul className="space-y-4">
+                                    {[
+                                        "Promote sustainability-focused education",
+                                        "Encourage student participation in social initiatives",
+                                        "Foster responsible leadership & ethical decision-making",
+                                        "Align institutional initiatives with UN SDGs",
+                                        "Create platforms for dialogue on inclusion & well-being"
+                                    ].map((item, i) => (
+                                        <li key={i} className="flex items-start gap-4 text-slate-600 text-lg">
+                                            <span className="w-1.5 h-1.5 bg-[#DE1819] rounded-full mt-2.5 flex-shrink-0"></span>
+                                            {item}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </motion.div>
+                        </div>
+
+                        {/* 3. What We Do - Grid */}
+                        <div className="relative">
+                            {/* Mesh Gradient Background for this specific section */}
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] -z-10 opacity-70 pointer-events-none overflow-hidden">
+                                <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-blue-400/20 rounded-full blur-[100px] mix-blend-multiply animate-pulse"></div>
+                                <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-red-400/20 rounded-full blur-[100px] mix-blend-multiply animate-pulse" style={{ animationDelay: '2s' }}></div>
+                            </div>
+
+                            <motion.div variants={fadeInUp} className="mb-12 text-center md:text-left relative z-10">
+                                <h3 className="text-3xl font-serif font-bold text-[#292929] mb-4">What We Do</h3>
+                                <p className="text-slate-500 text-lg max-w-2xl">Driving impact through diverse channels of engagement and community-led initiatives.</p>
+                            </motion.div>
+
+                            <div className="grid md:grid-cols-3 gap-8 relative z-10">
                                 {[
-                                    { name: "Ms. Pankti Pandey", title: "Top Sustainability Entrepreneur", icon: "🌱" },
-                                    { name: "Dr. Mukta Arora", title: "UN Women Representative", icon: "🇺🇳" },
-                                    { name: "Ms. Shrishti Dubey", title: "UN Representative", icon: "🌍" },
-                                    { name: "Ms. Bhaarati Kheora", title: "Sustainable Green Initiative", icon: "♻️" }
-                                ].map((speaker, idx) => (
-                                    <div key={idx} className="flex items-center gap-4 bg-white p-4 rounded-xl shadow-sm">
-                                        <div className="text-2xl">{speaker.icon}</div>
-                                        <div>
-                                            <div className="font-bold text-slate-900">{speaker.name}</div>
-                                            <div className="text-xs text-slate-500 uppercase tracking-wide">{speaker.title}</div>
+                                    {
+                                        title: "Events & Activities",
+                                        desc: "Organizing flagship conclaves like Respire '25 to foster dialogue.",
+                                        icon: Calendar,
+                                        color: "bg-blue-50 text-blue-600 blob-blue-300",
+                                        fillColor: "group-hover:fill-blue-200 group-hover:text-blue-600",
+                                        tags: ["Respire '25", "Conclaves"]
+                                    },
+                                    {
+                                        title: "Expert Workshops",
+                                        desc: "Panel discussions on social impact, policy & sustainability.",
+                                        icon: Mic,
+                                        color: "bg-purple-50 text-purple-600 blob-purple-300",
+                                        fillColor: "group-hover:fill-purple-200 group-hover:text-purple-600",
+                                        tags: ["Policy", "Sustainability"]
+                                    },
+                                    {
+                                        title: "Awareness Campaigns",
+                                        desc: "Drives for climate action, mental health & well-being.",
+                                        icon: Leaf,
+                                        color: "bg-green-50 text-green-600 blob-green-300",
+                                        fillColor: "group-hover:fill-green-200 group-hover:text-green-600",
+                                        tags: ["Climate Action", "Mental Health"]
+                                    },
+                                    {
+                                        title: "Student Projects",
+                                        desc: "Leading sustainability innovations & competitions.",
+                                        icon: Lightbulb,
+                                        color: "bg-yellow-50 text-yellow-600 blob-yellow-300",
+                                        fillColor: "group-hover:fill-yellow-200 group-hover:text-yellow-600",
+                                        tags: ["Innovation", "Startups"]
+                                    },
+                                    {
+                                        title: "Global Collaborations",
+                                        desc: "Partnering with NGOs & industry experts.",
+                                        icon: Users,
+                                        color: "bg-indigo-50 text-indigo-600 blob-indigo-300",
+                                        fillColor: "group-hover:fill-indigo-200 group-hover:text-indigo-600",
+                                        tags: ["NGOs", "UN Bodies"]
+                                    },
+                                    {
+                                        title: "Community Service",
+                                        desc: "Grassroots level engagement and social welfare drives.",
+                                        icon: Recycle,
+                                        color: "bg-red-50 text-red-600 blob-red-300",
+                                        fillColor: "group-hover:fill-red-200 group-hover:text-red-600",
+                                        tags: ["Social Welfare", "Drives"]
+                                    },
+                                ].map((item, idx) => (
+                                    <motion.div
+                                        key={idx}
+                                        variants={fadeInUp}
+                                        className="relative overflow-hidden bg-white/60 backdrop-blur-xl p-8 rounded-3xl border border-white/60 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group flex flex-col h-full"
+                                    >
+                                        {/* Dynamic Blended Blob inside card - Fill on Hover */}
+                                        <div className={`absolute -top-20 -right-20 w-64 h-64 ${item.color.split(' ').find(c => c.startsWith('blob-'))?.replace('blob-', 'bg-') || 'bg-gray-100'} opacity-20 blur-[60px] rounded-full pointer-events-none group-hover:scale-[25] group-hover:opacity-50 transition-all duration-1000 ease-in-out`}></div>
+
+                                        <div className="relative z-10 flex flex-col h-full">
+                                            <div className="flex justify-between items-start mb-6">
+                                                <div className={`w-14 h-14 ${item.color.split(' ')[0]} rounded-2xl rotate-3 group-hover:rotate-6 transition-transform duration-300 flex items-center justify-center shadow-inner`}>
+                                                    <item.icon className={item.color.split(' ')[1]} size={28} />
+                                                </div>
+                                                <div className="px-3 py-1 rounded-full bg-white/50 backdrop-blur-sm text-xs font-bold text-slate-400 uppercase tracking-wider border border-white/50 group-hover:text-[#DE1819] transition-colors">
+                                                    0{idx + 1}
+                                                </div>
+                                            </div>
+
+                                            <h4 className="font-serif font-bold text-xl text-[#292929] mb-3 group-hover:text-[#DE1819] transition-colors">{item.title}</h4>
+                                            <p className="text-slate-600 leading-relaxed text-sm mb-6 flex-grow font-medium">{item.desc}</p>
+
+                                            {/* Tags - Glassy Pills */}
+                                            <div className="flex flex-wrap gap-2">
+                                                {item.tags.map((tag, tIdx) => (
+                                                    <span key={tIdx} className="px-3 py-1.5 rounded-lg bg-white/50 backdrop-blur-md text-slate-600 text-[10px] font-bold uppercase tracking-wide border border-white/40 shadow-sm">
+                                                        {tag}
+                                                    </span>
+                                                ))}
+                                            </div>
                                         </div>
-                                    </div>
+
+                                        {/* Watermark Icon - Fill on Hover */}
+                                        <div className="absolute -bottom-4 -right-4 rotate-[-15deg] group-hover:rotate-0 group-hover:scale-110 transform transition-all duration-500 pointer-events-none">
+                                            <item.icon size={140} className={`text-slate-900/5 transition-all duration-500 ${item.fillColor}`} />
+                                        </div>
+
+                                        {/* Bottom Accent Line - Gradient */}
+                                        <div className={`absolute bottom-0 left-0 w-0 h-1.5 bg-gradient-to-r from-transparent via-${item.color.split(' ')[1].split('-')[1]}-500 to-transparent transition-all duration-700 group-hover:w-full opacity-80`}></div>
+                                    </motion.div>
                                 ))}
                             </div>
-                            <div className="mt-8 p-4 bg-brand-50 rounded-xl border border-brand-100">
-                                <p className="text-sm text-brand-800 italic">
-                                    "Through Outreaching & Networking, we visited various schools and conducted fun and engaging activities to spread awareness about sustainability. It helped us connect with young minds and inspire change at the grassroots level."
+                        </div>
+
+                        {/* 4. Approach & Impact - Full Width */}
+                        <motion.div
+                            variants={fadeInUp}
+                            className="grid md:grid-cols-2 gap-8 md:gap-16 items-center bg-gradient-to-br from-[#292929] to-[#1a1a1a] p-12 rounded-[2rem] shadow-2xl overflow-hidden relative"
+                        >
+                            {/* Decorative Elements */}
+                            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#DE1819] opacity-10 blur-[100px] rounded-full pointer-events-none -mr-32 -mt-32"></div>
+
+                            <div className="relative z-10">
+                                <h3 className="text-3xl font-serif font-bold text-white mb-6">Our Approach</h3>
+                                <p className="text-slate-300 text-lg leading-relaxed mb-8">
+                                    JCS believes that sustainability is not a single action but a mindset. By combining academic learning with real-world engagement, we empower students to become responsible change-makers.
                                 </p>
+                                <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/10">
+                                    <span className="w-2 h-2 rounded-full bg-[#DE1819]"></span>
+                                    <div className="text-white font-bold uppercase tracking-widest text-xs">Innovation • Action • Awareness</div>
+                                </div>
                             </div>
+
+                            <div className="bg-white/5 backdrop-blur-md p-8 rounded-2xl border border-white/10 relative z-10">
+                                <div className="flex items-center gap-3 mb-6">
+                                    <div className="p-2 bg-[#DE1819] rounded-lg text-white">
+                                        <Zap size={20} />
+                                    </div>
+                                    <h4 className="font-bold text-xl text-white">Our Impact</h4>
+                                </div>
+                                <ul className="space-y-4">
+                                    {[
+                                        "Increased campus-wide sustainability awareness",
+                                        "Fostered inclusive & responsible leadership",
+                                        "Dialogues on global & local critical issues",
+                                        "Strengthened institutional commitment to SDGs"
+                                    ].map((impact, i) => (
+                                        <li key={i} className="flex items-start gap-3 text-slate-300">
+                                            <div className="w-5 h-5 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center text-xs flex-shrink-0 mt-0.5">✓</div>
+                                            {impact}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                </div>
+            </section>
+
+            {/* 4. SDGs Grid - Interactive & Staggered */}
+            <section id="sdgs" className="py-5 px-6 md:px-12 lg:px-24 bg-white/40 backdrop-blur-3xl border-t border-white/20">
+                <motion.div
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    variants={fadeInUp}
+                    className="max-w-[1400px] mx-auto text-center mb-20"
+                >
+                    <h2 className="text-4xl md:text-5xl font-serif font-bold text-[#292929] mb-6">The 17 Goals</h2>
+                    <div className="w-24 h-1.5 bg-[#DE1819] mx-auto mb-8"></div>
+                    <p className="text-slate-500 max-w-2xl mx-auto text-lg leading-relaxed">
+                        JECRC University is committed to advancing the United Nations Sustainable Development Goals through dedicated student chapters and research initiatives.
+                    </p>
+                </motion.div>
+
+                <motion.div
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    variants={staggerContainer}
+                    className="max-w-[1400px] mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4"
+                >
+                    {sdgs.map((sdg) => (
+                        <motion.div
+                            key={sdg.id}
+                            variants={fadeInUp}
+                            whileHover={{ y: -8, scale: 1.02 }}
+                            onClick={() => setSelectedSDG(sdg)}
+                            className={`${sdg.color} text-white p-6 rounded-none shadow-sm cursor-pointer flex flex-col justify-between h-52 relative overflow-hidden group hover:shadow-2xl transition-all duration-300`}
+                        >
+                            <div className="absolute top-2 right-4 opacity-20 font-serif font-bold text-6xl group-hover:scale-125 transition-transform duration-500">{sdg.id}</div>
+                            <div className="font-bold text-xl relative z-10">{sdg.id}</div>
+                            <div className="relative z-10">
+                                <h3 className="font-bold leading-tight text-sm opacity-95">{sdg.title}</h3>
+                                <div className="h-[2px] w-0 bg-white mt-3 group-hover:w-8 transition-all duration-500"></div>
+                            </div>
+                        </motion.div>
+                    ))}
+                </motion.div>
+            </section>
+
+            {/* 5. Initiatives - Glassy & Modern */}
+            <section id="initiatives" className="py-20 px-6 md:px-12 lg:px-24 bg-white/40 backdrop-blur-3xl border-t border-white/20 relative">
+                <div className="max-w-[1400px] mx-auto relative z-10">
+                    <motion.div
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                        variants={fadeInUp}
+                        className="flex flex-col md:flex-row justify-between items-end mb-16 border-b border-gray-200 pb-8"
+                    >
+                        <div>
+                            <h2 className="text-4xl font-serif font-bold text-[#292929] mb-3">Campus Initiatives</h2>
+                            <p className="text-slate-500 text-lg">Driving tangible impact through student-led action.</p>
+                        </div>
+                        <button onClick={() => navigate('/gallery')} className="text-[#DE1819] font-bold text-sm tracking-[0.15em] uppercase hover:text-black transition-colors mt-6 md:mt-0 flex items-center gap-2 group">
+                            View All Events <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                        </button>
+                    </motion.div>
+
+                    <motion.div
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                        variants={staggerContainer}
+                        className="grid md:grid-cols-3 gap-8"
+                    >
+                        {[
+                            { icon: Leaf, title: "Green Campus Protocol", desc: "Committed to initiating sustainable transformation by adopting green practices within the JECRC University campus and setting an example for wider impact." },
+                            { icon: Users, title: "Community Adoption", desc: "Actively engaging and empowering local communities to adopt sustainable practices through awareness, participation, and long-term collaboration." },
+                            { icon: Lightbulb, title: "Innovation Incubation", desc: "Providing seed funding and mentorship for student startups focused on sustainability." }
+                        ].map((item, idx) => (
+                            <motion.div
+                                key={idx}
+                                variants={fadeInUp}
+                                className="bg-white p-10 border border-gray-100 hover:border-[#DE1819]/20 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group rounded-2xl"
+                            >
+                                <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center text-[#DE1819] mb-8 group-hover:bg-[#DE1819] group-hover:text-white transition-colors duration-500 shadow-sm">
+                                    <item.icon size={28} />
+                                </div>
+                                <h3 className="text-2xl font-serif font-bold text-[#292929] mb-4">{item.title}</h3>
+                                <p className="text-slate-600 text-base leading-relaxed">{item.desc}</p>
+                            </motion.div>
+                        ))}
+                    </motion.div>
+                </div>
+            </section>
+
+            {/* 5.5. Generation Green Campaign - Emerald Theme (Flagship) */}
+            <section id="generation-green" className="py-20 px-6 md:px-12 lg:px-24 bg-emerald-50 relative overflow-hidden">
+                {/* Decorative Background Element */}
+                <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-emerald-100/40 rounded-full blur-[120px] -ml-32 -mt-32 pointer-events-none"></div>
+
+                <div className="max-w-[1400px] mx-auto relative z-10">
+                    <motion.div
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                        variants={fadeInUp}
+                        className="mb-20 text-center"
+                    >
+                        <span className="text-emerald-600 font-bold tracking-[0.2em] text-sm uppercase bg-emerald-100 px-4 py-2 rounded-full">The Gen-G Moment</span>
+                        <h2 className="text-5xl md:text-6xl font-serif font-bold text-[#292929] mt-6 mb-6">Generation Green Campaign</h2>
+                        <p className="text-slate-600 text-xl max-w-3xl mx-auto leading-relaxed">
+                            Generation Green Campaign (Gen G) an initiative by Oppo India, AICTE, NITI Aasyog and Ministry of Education to inspire and empower youth to champion sustainability through green skills and actions. In a world where environmental concerns are paramount, the campaign cultivates an eco-conscious mindset, equipping youth with the knowledge and skills to tackle environmental challenges.
+                            Generation G campaign empowers the youth to embrace and advocate sustainability while focusing on management of electronic waste based the principles of Repair, Reuse and Recycle.
+                        </p>
+                    </motion.div>
+
+                    <div className="flex flex-col gap-16">
+                        {/* 1. Focus Areas Grid */}
+                        <motion.div
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true }}
+                            variants={staggerContainer}
+                            className="grid md:grid-cols-4 gap-6"
+                        >
+                            {[
+                                { title: "Awareness", icon: Lightbulb, text: "Educating on climate action & conservation." },
+                                { title: "Green Practices", icon: Recycle, text: "Promoting waste reduction & energy efficiency." },
+                                { title: "Engagement", icon: Users, text: "Fostering student-led environmental leadership." },
+                                { title: "Impact", icon: Globe, text: "Extending sustainability beyond campus." }
+                            ].map((item, i) => (
+                                <motion.div
+                                    key={i}
+                                    variants={fadeInUp}
+                                    className="bg-white p-8 rounded-2xl shadow-sm border border-emerald-100/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group"
+                                >
+                                    <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center mb-6 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                                        <item.icon size={24} />
+                                    </div>
+                                    <h4 className="font-serif font-bold text-lg text-[#292929] mb-2">{item.title}</h4>
+                                    <p className="text-sm text-slate-500 leading-relaxed">{item.text}</p>
+                                </motion.div>
+                            ))}
+                        </motion.div>
+
+                        {/* 2. Activities & Impact Split */}
+                        <div className="grid lg:grid-cols-2 gap-12">
+                            {/* Activities List */}
+                            <motion.div
+                                initial="hidden"
+                                whileInView="visible"
+                                viewport={{ once: true }}
+                                variants={fadeInUp}
+                                className="bg-white p-10 rounded-[2rem] border border-emerald-100 shadow-sm"
+                            >
+                                <h3 className="text-2xl font-serif font-bold text-[#292929] mb-8">Major Activities - Real Change Doesn't Need a Filter It Needs Action and JCS Delivers</h3>
+
+                                <div className="space-y-6">
+                                    {[
+                                        "Our team of 21 AICTE Authorised Interns made it possible!",
+                                        "Sustainability workshops & expert sessions",
+                                        "Collected over 250 kg of e-waste",
+                                        "Reached out to 40+ schools",
+                                        "Inspired more than 27,000+ students",
+                                        "Social media to podcasts and street plays",
+                                        "10,000+ Green pledges",
+                                        "Green Ambassadors appointed in schools",
+                                    ].map((activity, i) => (
+                                        <div key={i} className="flex items-start gap-4">
+                                            {activity !== "Our team of 21 AICTE Authorised Interns made it possible!" && (
+                                                <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                                    <Leaf size={14} />
+                                                </div>
+                                            )}
+                                            <span className="text-slate-600 text-lg">{activity}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </motion.div>
+
+                            {/* Impact Card - Dark Emerald */}
+                            <motion.div
+                                initial="hidden"
+                                whileInView="visible"
+                                viewport={{ once: true }}
+                                variants={fadeInUp}
+                                className="bg-emerald-900 p-10 rounded-[2rem] text-white flex flex-col justify-between relative overflow-hidden group"
+                            >
+                                <div className="absolute bottom-0 right-0 w-64 h-64 bg-emerald-500 opacity-20 blur-[80px] rounded-full pointer-events-none transition-opacity group-hover:opacity-30"></div>
+
+                                <div>
+                                    <h3 className="text-2xl font-serif font-bold mb-6 flex items-center gap-3">
+                                        <Zap className="text-emerald-400" /> Our Impact
+                                    </h3>
+                                    <p className="text-emerald-100/80 text-lg leading-relaxed mb-8">
+                                        <span className="text-white font-bold">Because We turned trash into triumph- The JCS style.</span>
+                                        <br />
+                                        It began with the Generation Green Campaign, a landmark sustainability initiative that marked a significant milestone in JECRC University’s journey toward environmental responsibility. Through this campaign, the institution’s consistent efforts in promoting sustainability, youth engagement, and eco-friendly practices were formally recognized at a national level.
+
+                                        As a result of this impactful initiative, JECRC University was bestowed with the title of “ECO-Conscious Institution in Rajasthan” and designated as a Nodal Centre for Sustainable Initiatives. This recognition was conferred by esteemed national and global bodies, including the Ministry of Education, AICTE, NITI Aayog, OPPO India, and the 1M1B (One Million for One Billion) Foundation.
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <h4 className="text-xs font-bold uppercase tracking-widest text-emerald-400 mb-4">Aligned with SDGs</h4>
+                                    <div className="flex gap-3 relative">
+                                        {[11, 12, 13, 15].map((sdgId) => {
+                                            const sdgInfo = sdgs.find(s => s.id === sdgId);
+                                            return (
+                                                <div key={sdgId} className="relative">
+                                                    <AnimatePresence>
+                                                        {activeTooltip === sdgId && (
+                                                            <motion.div
+                                                                initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                                                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                                                exit={{ opacity: 0, y: 10, scale: 0.9 }}
+                                                                className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-max max-w-[150px] bg-white text-[#292929] text-xs font-bold py-2 px-3 rounded-lg shadow-xl z-20 text-center border border-emerald-100"
+                                                            >
+                                                                {sdgInfo?.title || `SDG ${sdgId}`}
+                                                                <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-white"></div>
+                                                            </motion.div>
+                                                        )}
+                                                    </AnimatePresence>
+                                                    <button
+                                                        onClick={() => setActiveTooltip(activeTooltip === sdgId ? null : sdgId)}
+                                                        className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-sm border transition-all duration-300 ${activeTooltip === sdgId
+                                                            ? 'bg-white text-emerald-900 border-white scale-110 shadow-lg'
+                                                            : 'bg-white/10 border-white/20 text-white hover:bg-white/20'
+                                                            }`}
+                                                    >
+                                                        {sdgId}
+                                                    </button>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            </motion.div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* 6. Get Involved */}
-            <section id="contact" className="py-24 px-6 md:px-12 lg:px-24 bg-white relative overflow-hidden">
-                <div className="max-w-5xl mx-auto relative z-10 bg-slate-900 rounded-3xl p-12 md:p-16 text-center text-white shadow-2xl overflow-hidden">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-brand-600 rounded-full filter blur-[80px] opacity-20 transform translate-x-1/2 -translate-y-1/2"></div>
+            {/* 6. Flagship Event - Respire '25 Bento Grid (Animated) */}
+            <section id="events" className="py-20 px-6 bg-white/40 backdrop-blur-3xl border-t border-white/20 relative overflow-hidden">
+                {/* Background Blur */}
+                <div className="absolute top-1/2 left-1/4 w-[800px] h-[800px] bg-red-500/5 rounded-full blur-[120px] pointer-events-none -translate-y-1/2"></div>
 
-                    <h2 className="text-4xl font-bold mb-6">Ready to Make an Impact?</h2>
-                    <p className="text-slate-300 text-lg mb-10 max-w-2xl mx-auto">
-                        Whether you are a student, faculty member, or partner organization, there is a place for you in our mission. Join the core team or volunteer for our next campaign.
-                    </p>
-                    <div className="flex flex-col sm:flex-row justify-center gap-4">
-                        <button
-                            onClick={() => setIsPartnerModalOpen(true)}
-                            className="px-8 py-4 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl shadow-lg transition-colors transform hover:-translate-y-1"
-                        >
-                            Partner With Us
-                        </button>
-                    </div>
+                <div className="max-w-[1400px] mx-auto relative z-10">
+                    <motion.div
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                        variants={fadeInUp}
+                        className="mb-16 text-center"
+                    >
+                        <span className="text-[#DE1819] font-bold tracking-[0.2em] text-sm uppercase bg-red-50 px-4 py-2 rounded-full">Flagship Sustainability Fair</span>
+                        <h2 className="text-6xl md:text-7xl font-serif font-bold text-[#292929] mt-6 tracking-tight">ReSpire '25</h2>
+                    </motion.div>
+
+                    <motion.div
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                        variants={staggerContainer}
+                        className="grid grid-cols-1 md:grid-cols-12 gap-6"
+                    >
+                        {/* 1. Main Overview Card - Large */}
+                        <motion.div variants={fadeInUp} className="md:col-span-8 bg-white p-10 md:p-14 rounded-[2rem] shadow-sm border border-slate-100 flex flex-col justify-center hover:shadow-xl transition-shadow duration-500">
+                            <h3 className="text-3xl font-serif font-bold text-[#292929] mb-6">Building a Sustainable Future</h3>
+                            <p className="text-slate-600 text-xl leading-relaxed mb-8 font-light">
+                                Re-Spire: National Conclave & Flagship Event for Sustainable Innovation
+
+                                More than just an event, Re-Spire is a movement. It brings the country's most influential voices in sustainability to our campus, turning dialogue into action. From hosting national guests to executing high-Impact green challenges, Re-Spire is where thought leadership meets ground-level innovation to redefine what a sustainable campus looks like.
+
+                                Re-Spire hosted a formidable alliance of sustainability crusaders-Pankti Pandey, Shristi Dubey, Mukta Arora, and Bharti Kheora. Together, these Titans of Change ignited a campus-wide revolution, moving the conversation from mere awareness to high-impact, science-backed environmental action.
+                            </p>
+                        </motion.div>
+
+                        {/* 2. Theme Card - Red Accent */}
+                        <motion.div variants={fadeInUp} className="md:col-span-4 bg-[#DE1819] p-10 md:p-14 rounded-[2rem] shadow-2xl shadow-red-900/20 text-white flex flex-col justify-center relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 p-32 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16 transition-all duration-700 group-hover:bg-white/20 group-hover:scale-150"></div>
+                            <h4 className="font-bold uppercase tracking-widest opacity-80 mb-4 text-sm relative z-10">The Theme</h4>
+                            <p className="text-2xl md:text-3xl font-serif font-bold leading-tight relative z-10">
+                                "Building a Sustainable Future Through Youth Leadership"
+                            </p>
+                        </motion.div>
+
+                        {/* 3. Image Card - Tall */}
+                        <motion.div variants={fadeInUp} className="md:col-span-4 row-span-2 relative min-h-[450px] rounded-[2rem] overflow-hidden shadow-lg group">
+                            <img
+                                src="https://images.unsplash.com/photo-1544531586-fde5298cdd40?q=80&w=2670&auto=format&fit=crop"
+                                className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                                alt="Event Crowd"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            <div className="absolute bottom-0 left-0 p-10 text-white">
+                                <p className="font-serif italic text-xl opacity-90 leading-relaxed">"Where policy makers, environmentalists, and students convene."</p>
+                            </div>
+                        </motion.div>
+
+                        {/* 4. Highlights Grid - 2x2 */}
+                        <motion.div variants={fadeInUp} className="md:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            {[
+                                { icon: Mic, color: "orange", title: "Expert Keynotes", text: "Insights from ISRO scientists and sustainability leaders." },
+                                { icon: Users, color: "blue", title: "Distinguished Panels", text: "UN Women reps and social leaders on gender equity." },
+                                { icon: Layout, color: "green", title: "Roundtables", text: "Dialogues on mental health and empathetic leadership." },
+                                { icon: Trophy, color: "purple", title: "Student Innovation", text: "Competitions showcasing creativity for real-world impact." }
+                            ].map((item, i) => (
+                                <div key={i} className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                                    <div className={`w-12 h-12 bg-${item.color}-50 text-${item.color}-600 rounded-xl flex items-center justify-center mb-4`}>
+                                        <item.icon size={24} />
+                                    </div>
+                                    <h4 className="font-serif font-bold text-[#292929] mb-2 text-lg">{item.title}</h4>
+                                    <p className="text-sm text-slate-500 leading-relaxed">{item.text}</p>
+                                </div>
+                            ))}
+                        </motion.div>
+
+                        {/* 5. Impact & Conclusion - Full Width Banner */}
+                        <motion.div variants={fadeInUp} className="md:col-span-12 bg-[#292929] text-white p-12 md:p-16 rounded-[2rem] flex flex-col md:flex-row items-center gap-12 shadow-2xl relative overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-white/5 opacity-50"></div>
+                            <div className="flex-1 relative z-10">
+                                <div className="flex items-center gap-3 mb-6 text-[#DE1819]">
+                                    <Zap size={28} />
+                                    <span className="font-bold uppercase tracking-widest text-sm">Impact</span>
+                                </div>
+                                <h3 className="text-3xl md:text-4xl font-serif font-bold mb-6">A Catalyst for Transformation</h3>
+                                <p className="opacity-80 leading-relaxed text-lg font-light max-w-2xl">
+                                    Respire 25 went beyond being an event—it reinforced JCS’s role as a platform for youth-driven change,
+                                    strengthening student leadership and social consciousness across multiple institutions.
+                                </p>
+                            </div>
+                            <div className="flex-shrink-0 relative z-10">
+                                <div className="grid grid-cols-2 gap-12 text-center">
+                                    <div>
+                                        <div className="text-4xl md:text-5xl font-serif font-bold text-[#DE1819] mb-2">10+</div>
+                                        <div className="text-xs uppercase tracking-[0.2em] opacity-60">Speakers</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-4xl md:text-5xl font-serif font-bold text-[#DE1819] mb-2">500+</div>
+                                        <div className="text-xs uppercase tracking-[0.2em] opacity-60">Students</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </motion.div>
                 </div>
             </section>
+
+            {/* 7. Partner With Us CTA - Sleek Minimalist Banner */}
+            <section className="py-8 px-6 bg-slate-50">
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                    className="max-w-[1200px] mx-auto bg-[#292929] rounded-[2rem] p-10 md:p-16 flex flex-col md:flex-row items-center justify-between gap-10 shadow-2xl relative overflow-hidden group"
+                >
+                    {/* Subtle Background Glow */}
+                    <div className="absolute top-0 right-0 w-96 h-96 bg-[#DE1819] opacity-20 blur-[120px] rounded-full pointer-events-none -mr-20 -mt-20 transition-opacity duration-700 group-hover:opacity-30"></div>
+
+                    <div className="text-left relative z-10 max-w-2xl">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="p-2.5 bg-white/10 rounded-xl text-white backdrop-blur-sm"><Users size={20} /></div>
+                            <span className="text-[#DE1819] font-bold tracking-[0.2em] text-xs uppercase">Join the Mission</span>
+                        </div>
+                        <h2 className="text-3xl md:text-4xl font-serif font-bold text-white mb-4">Partner with JCS</h2>
+                        <p className="text-slate-400 text-base md:text-lg max-w-xl font-light leading-relaxed">
+                            Support sustainability through sponsorship, knowledge exchange, or joint initiatives.
+                        </p>
+                    </div>
+
+                    <div className="flex-shrink-0 relative z-10">
+                        <MagneticButton
+                            onClick={() => setIsPartnerModalOpen(true)}
+                            className="px-10 py-4 bg-[#DE1819] text-white font-bold text-sm uppercase tracking-widest hover:bg-[#b51617] shadow-lg shadow-red-900/30 rounded-xl flex items-center gap-3"
+                        >
+                            Become a Partner <ArrowRight size={18} />
+                        </MagneticButton>
+                    </div>
+                </motion.div>
+            </section>
+
+            {/* 7. Footer - PRESERVED AS IS */}
+            <footer className="bg-white border-t border-slate-100 pt-32 pb-12">
+                <div className="max-w-7xl mx-auto px-6">
+                    <div className="grid md:grid-cols-4 gap-12 mb-20">
+                        <div className="md:col-span-2">
+                            <div className="font-black text-2xl text-slate-900 mb-8 flex items-center gap-3">
+                                <span className="tracking-tight">JECRC Center for SGD's</span>
+                            </div>
+                            <p className="text-slate-500 text-sm leading-relaxed">The Center for Sustainable Development Goals is committed to fostering a culture of sustainability and impact.</p>
+                        </div>
+                        <div>
+                            <h4 className="font-bold text-slate-900 mb-8 text-sm uppercase tracking-wider">Explore</h4>
+                            <ul className="space-y-4 text-slate-500 text-sm">
+                                <li onClick={() => window.open('https://jecrcuniversity.edu.in', '_blank')} className="hover:text-[#DE1819] cursor-pointer transition-colors">Jecrc University</li>
+                                <li onClick={() => document.getElementById('initiatives')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-[#DE1819] cursor-pointer transition-colors">Our Initiatives</li>
+                                <li onClick={() => navigate('/gallery')} className="hover:text-[#DE1819] cursor-pointer transition-colors">Events Gallery</li>
+                                <li onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-[#DE1819] cursor-pointer transition-colors">About Us</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 className="font-bold text-slate-900 mb-8 text-sm uppercase tracking-wider">Contact</h4>
+                            <div className="flex gap-4 mb-6">
+                                <a
+                                    href="https://www.instagram.com/jecrc.jcs?igsh=MW1tYmo0MHZ5YWJpOQ=="
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-500 hover:bg-gradient-to-tr hover:from-yellow-400 hover:via-red-500 hover:to-purple-500 hover:text-white transition-all duration-300 shadow-sm hover:shadow-md group"
+                                >
+                                    <Instagram size={18} strokeWidth={1.5} className="group-hover:scale-110 transition-transform" />
+                                </a>
+                                <a
+                                    href="https://www.linkedin.com/company/jecrc-centre-for-sustainable-development-goals/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-500 hover:bg-[#0077b5] hover:text-white transition-all duration-300 shadow-sm hover:shadow-md group"
+                                >
+                                    <Linkedin size={18} strokeWidth={1.5} className="group-hover:scale-110 transition-transform" />
+                                </a>
+                                <a
+                                    href="mailto:csdg@jecrcu.edu.in"
+                                    className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-500 hover:bg-[#DE1819] hover:text-white transition-all duration-300 shadow-sm hover:shadow-md group"
+                                >
+                                    <Mail size={18} strokeWidth={1.5} className="group-hover:scale-110 transition-transform" />
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="border-t border-slate-100 pt-10 flex flex-col md:flex-row justify-between items-center gap-6 text-xs text-slate-400 uppercase tracking-wider">
+                        <div>&copy; 2025 JECRC University Center for SDGs. All rights reserved.</div>
+                        <div>Designed by JCS.</div>
+                    </div>
+                </div>
+            </footer>
+
+            {/* SDG Detail Modal */}
+            <AnimatePresence>
+                {selectedSDG && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md"
+                        onClick={() => setSelectedSDG(null)}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                            className="bg-white rounded-xl shadow-2xl overflow-hidden max-w-2xl w-full border-t-4 border-[#DE1819]"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className={`${selectedSDG.color} p-10 text-white relative`}>
+                                <button onClick={() => setSelectedSDG(null)} className="absolute top-6 right-6 bg-white/20 p-2 rounded-full hover:bg-white/30 transition-colors">
+                                    <X size={20} />
+                                </button>
+                                <div className="text-8xl font-serif font-black opacity-10 absolute -bottom-4 -right-4">{selectedSDG.id}</div>
+                                <div className="relative z-10 pt-4">
+                                    <h3 className="text-5xl font-serif font-bold mb-4">{selectedSDG.title}</h3>
+                                    <p className="opacity-90 max-w-lg font-sans text-lg leading-relaxed">{selectedSDG.desc}</p>
+                                </div>
+                            </div>
+                            <div className="p-10">
+                                <h4 className="font-bold text-slate-900 mb-4 flex items-center gap-2 font-serif text-xl">
+                                    <Target className="text-[#DE1819]" size={24} /> Specific Targets
+                                </h4>
+                                <p className="text-slate-600 leading-relaxed text-lg mb-10 font-sans">
+                                    {selectedSDG.details}
+                                </p>
+
+                            </div>
+                        </motion.div >
+                    </motion.div >
+                )}
+            </AnimatePresence >
+
+            {/* Connecting to Dashboard Animation */}
+            <AnimatePresence>
+                {isConnecting && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[100] bg-[#FAFAFA] flex flex-col items-center justify-center p-6"
+                    >
+                        <motion.div
+                            initial={{ scale: 0.8, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ delay: 0.2, type: "spring", stiffness: 120 }}
+                            className="relative"
+                        >
+                            {/* Animated Rings */}
+                            <motion.div
+                                animate={{
+                                    scale: [1, 1.5, 1],
+                                    opacity: [0.5, 0, 0.5],
+                                }}
+                                transition={{
+                                    duration: 2,
+                                    repeat: Infinity,
+                                    ease: "easeInOut"
+                                }}
+                                className="absolute inset-0 bg-[#DE1819]/20 rounded-full blur-xl"
+                            />
+
+                            <div className="w-24 h-24 bg-white rounded-2xl shadow-xl flex items-center justify-center relative z-10 overflow-hidden">
+                                <motion.div
+                                    animate={{ rotate: 360 }}
+                                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                                    className="absolute inset-0 rounded-full border-4 border-[#DE1819]/10 border-t-[#DE1819]"
+                                />
+                                <div className="font-serif font-bold text-2xl text-[#292929]">JCS</div>
+                            </div>
+                        </motion.div>
+
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.4 }}
+                            className="mt-8 text-center"
+                        >
+                            <h3 className="text-2xl font-serif font-bold text-[#292929] mb-2">Connecting to Dashboard</h3>
+                            <div className="flex items-center gap-1 justify-center">
+
+                                <motion.span
+                                    animate={{ opacity: [0, 1, 0] }}
+                                    transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 0.2 }}
+                                    className="text-[#DE1819]"
+                                >.</motion.span>
+                                <motion.span
+                                    animate={{ opacity: [0, 1, 0] }}
+                                    transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 0.4 }}
+                                    className="text-[#DE1819]"
+                                >.</motion.span>
+                                <motion.span
+                                    animate={{ opacity: [0, 1, 0] }}
+                                    transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 0.6 }}
+                                    className="text-[#DE1819]"
+                                >.</motion.span>
+                            </div>
+                        </motion.div>
+
+                        {/* Progress Line */}
+                        <div className="w-64 h-1 bg-gray-100 rounded-full mt-8 overflow-hidden">
+                            <motion.div
+                                initial={{ x: "-100%" }}
+                                animate={{ x: "0%" }}
+                                transition={{ duration: 1.5, ease: "easeInOut" }}
+                                className="w-full h-full bg-[#DE1819]"
+                            />
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
 
             {/* Partner Modal */}
             <PartnerModal isOpen={isPartnerModalOpen} onClose={() => setIsPartnerModalOpen(false)} />
 
-            {/* Footer */}
-            <footer className="bg-slate-950 text-slate-500 py-12 px-6 border-t border-slate-900">
-                <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-                    <div>
-                        <div className="text-white font-bold text-xl mb-1">Center for SDGs</div>
-                        <div className="text-sm">JECRC University, Jaipur</div>
-                        <a href="mailto:csdg@jecrcu.edu.in" className="text-sm text-brand-500 hover:text-brand-400 mt-1 block">csdg@jecrcu.edu.in</a>
-                    </div>
-                    <div className="text-sm">
-                        &copy; 2025 JECRC University. All rights reserved.
-                    </div>
-                    <div className="flex gap-4">
-                        <a href="https://www.instagram.com/jecrc.jcs?igsh=MW1tYmo0MHZ5YWJpOQ==" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Instagram</a>
-                        <a href="https://www.linkedin.com/company/jecrc-centre-for-sustainable-development-goals/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">LinkedIn</a>
-                        <a href="mailto:csdg@jecrcu.edu.in" className="hover:text-white transition-colors">Contact</a>
-                    </div>
-                </div>
-            </footer>
+            {/* Scroll to Top Button */}
+            <motion.button
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className="fixed bottom-8 right-8 z-50 w-14 h-14 bg-[#DE1819] text-white rounded-full shadow-2xl flex items-center justify-center hover:bg-[#b01314] transition-colors"
+                title="Scroll to Top"
+            >
+                <ArrowUp size={24} strokeWidth={2.5} />
+            </motion.button>
         </div>
     );
 };

@@ -32,8 +32,8 @@ const Dashboard = () => {
   const totalEvents = approvedEvents.length;
   const totalParticipants = approvedEvents.reduce((acc, curr) => acc + curr.participants, 0);
 
-  // Updated colors to match Red theme
-  const COLORS = ['#ef4444', '#3b82f6', '#f59e0b', '#64748b', '#8b5cf6'];
+  // Updated colors to match Red/Green/White theme
+  const COLORS = ['#DE1819', '#10b981', '#ef4444', '#059669', '#b91c1c'];
 
   // --- Advanced Analytics (JS Max) ---
 
@@ -215,7 +215,7 @@ const Dashboard = () => {
               <h3 className="text-lg lg:text-xl font-bold text-main mt-1 truncate max-w-[150px]">{topDepartment?.code || "N/A"}</h3>
               <p className="text-xs text-brand-600 mt-1">{topDepartment?.totalCredits || 0} Credits</p>
             </div>
-            <div className="p-2 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 rounded-lg">
+            <div className="p-2 bg-red-50 dark:bg-red-900/30 text-[#DE1819] rounded-lg">
               <Trophy size={20} className="lg:w-6 lg:h-6" />
             </div>
           </div>
@@ -230,7 +230,7 @@ const Dashboard = () => {
                 {currentUser?.role === 'Coordinator' ? 'High Score Event:' : 'Best Month:'} {bestMonth}
               </p>
             </div>
-            <div className="p-2 bg-blue-100 dark:bg-blue-900/30 text-blue-600 rounded-lg">
+            <div className="p-2 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 rounded-lg">
               <Calendar size={20} className="lg:w-6 lg:h-6" />
             </div>
           </div>
@@ -243,7 +243,7 @@ const Dashboard = () => {
               <h3 className="text-xl lg:text-2xl font-bold text-main mt-1">{totalParticipants}</h3>
               <p className="text-xs text-muted mt-1">Active participants</p>
             </div>
-            <div className="p-2 bg-green-100 dark:bg-green-900/30 text-green-600 rounded-lg">
+            <div className="p-2 bg-red-50 dark:bg-red-900/30 text-[#DE1819] rounded-lg">
               <Users size={20} className="lg:w-6 lg:h-6" />
             </div>
           </div>
@@ -258,7 +258,7 @@ const Dashboard = () => {
               </h3>
               <p className="text-xs text-muted mt-1">Most targeted SDG</p>
             </div>
-            <div className="p-2 bg-purple-100 dark:bg-purple-900/30 text-purple-600 rounded-lg">
+            <div className="p-2 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 rounded-lg">
               <Target size={20} className="lg:w-6 lg:h-6" />
             </div>
           </div>
@@ -295,7 +295,7 @@ const Dashboard = () => {
         <div className="bg-card p-5 lg:p-6 rounded-xl shadow-sm border border-border flex flex-col h-full w-full min-w-0">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-base lg:text-lg font-bold text-main">Leaderboard</h3>
-            <div className="bg-yellow-100 dark:bg-yellow-900/30 p-1.5 rounded-lg text-yellow-600">
+            <div className="bg-red-50 dark:bg-red-900/30 p-1.5 rounded-lg text-[#DE1819]">
               <Trophy size={18} />
             </div>
           </div>
@@ -307,13 +307,13 @@ const Dashboard = () => {
               let icon = <span className="text-xs">{index + 1}</span>;
 
               if (index === 0) {
-                rankStyle = "bg-gradient-to-br from-yellow-100 to-yellow-50 border-yellow-200 text-yellow-700 dark:from-yellow-900/40 dark:to-yellow-900/10 dark:border-yellow-800 dark:text-yellow-400";
+                rankStyle = "bg-gradient-to-br from-red-100 to-red-50 border-red-200 text-[#DE1819] dark:from-red-900/40 dark:to-red-900/10 dark:border-red-800 dark:text-red-400";
                 icon = <Trophy size={14} fill="currentColor" />;
               } else if (index === 1) {
-                rankStyle = "bg-gradient-to-br from-slate-100 to-slate-50 border-slate-200 text-slate-700 dark:from-slate-800 dark:to-slate-900 dark:border-slate-700 dark:text-slate-300";
+                rankStyle = "bg-gradient-to-br from-emerald-100 to-emerald-50 border-emerald-200 text-emerald-700 dark:from-emerald-800 dark:to-emerald-900 dark:border-emerald-700 dark:text-emerald-300";
                 icon = <Medal size={14} />;
               } else if (index === 2) {
-                rankStyle = "bg-gradient-to-br from-orange-100 to-orange-50 border-orange-200 text-orange-800 dark:from-orange-900/40 dark:to-orange-900/10 dark:border-orange-800 dark:text-orange-400";
+                rankStyle = "bg-gradient-to-br from-slate-100 to-slate-50 border-slate-200 text-slate-600 dark:from-slate-900/40 dark:to-slate-900/10 dark:border-slate-800 dark:text-slate-400";
                 icon = <Medal size={14} />;
               }
 

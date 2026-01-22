@@ -85,7 +85,7 @@ const LoginPage = () => {
                         </div>
                         <div className="flex items-center space-x-3 text-sm text-slate-300">
                             <div className="p-2 bg-slate-800 rounded-lg"><Building2 size={18} className="text-blue-400" /></div>
-                            <span>Department Management</span>
+                            <span>Department Events Management</span>
                         </div>
                         <div className="flex items-center space-x-3 text-sm text-slate-300">
                             <div className="p-2 bg-slate-800 rounded-lg"><Globe size={18} className="text-green-400" /></div>

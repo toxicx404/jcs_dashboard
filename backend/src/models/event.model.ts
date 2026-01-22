@@ -88,7 +88,7 @@ Event.init(
     },
     status: {
       type: DataTypes.ENUM('Draft', 'Submitted', 'Under Review', 'Approved', 'Rejected'),
-      defaultValue: 'Submitted',
+      defaultValue: 'Approved',
     },
     credits: {
       type: DataTypes.INTEGER,

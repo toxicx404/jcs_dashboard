@@ -12,11 +12,15 @@ const Skeleton = ({ className }: { className?: string }) => (
 );
 
 const EventGallery = ({ myEventsOnly = false }) => {
-    const { events, currentUser } = useJCS();
+    const { events, currentUser, editEvent } = useJCS();
     const [filterType, setFilterType] = useState('All');
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedEvent, setSelectedEvent] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
+
+    // Edit Mode State
+    const [isEditingEvent, setIsEditingEvent] = useState(false);
+    const [editForm, setEditForm] = useState<any>(null);
 
     useEffect(() => {
         // Simulate loading
@@ -28,7 +32,7 @@ const EventGallery = ({ myEventsOnly = false }) => {
 
     let displayEvents = myEventsOnly
         ? events.filter(e => e.departmentId === currentUser.departmentId)
-        : events.filter(e => e.status === 'Approved');
+        : events;
 
     if (filterType !== 'All') {
         displayEvents = displayEvents.filter(e => e.type === filterType);
@@ -175,15 +179,7 @@ const EventGallery = ({ myEventsOnly = false }) => {
                                     alt={event.title}
                                     className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                                 />
-                                <div className="absolute top-3 right-3">
-                                    <span className={`
-                                text-xs font-bold px-2 py-1 rounded-full border shadow-sm 
-                                transition-all duration-300
-                                ${getStatusColor(event.status)}
-                             `}>
-                                        {event.status}
-                                    </span>
-                                </div>
+
                                 {/* Overlay department name on hover for cleaner look */}
                                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
                                     <p className="text-white font-bold text-sm truncate">{event.departmentName}</p>
@@ -229,7 +225,7 @@ const EventGallery = ({ myEventsOnly = false }) => {
                     {/* Backdrop */}
                     <div
                         className="absolute inset-0 bg-slate-900/60 backdrop-blur-md transition-opacity"
-                        onClick={() => setSelectedEvent(null)}
+                        onClick={() => { setSelectedEvent(null); setIsEditingEvent(false); }}
                     />
 
                     {/* Modal Content */}
@@ -286,24 +282,85 @@ const EventGallery = ({ myEventsOnly = false }) => {
 
                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                                 <div className="lg:col-span-2 space-y-6">
-                                    <div>
-                                        <h3 className="text-lg font-bold text-main mb-3 flex items-center"><Info size={18} className="mr-2 text-brand-500" /> Description</h3>
-                                        <p className="text-muted leading-relaxed whitespace-pre-wrap">{selectedEvent.description}</p>
-                                    </div>
-
-                                    <div>
-                                        <h3 className="text-lg font-bold text-main mb-3 flex items-center"><CheckCircle2 size={18} className="mr-2 text-green-500" /> Actions Taken</h3>
-                                        <p className="text-muted leading-relaxed whitespace-pre-wrap">{selectedEvent.actionsTaken || "No specific actions details provided."}</p>
-                                    </div>
-
-                                    {/* Admin Feedback Section */}
-                                    {selectedEvent.feedback && (
-                                        <div className="bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-yellow-800 rounded-xl p-4">
-                                            <h4 className="text-sm font-bold text-yellow-800 dark:text-yellow-400 mb-2 flex items-center">
-                                                <MessageSquare size={16} className="mr-2" /> Admin Feedback
-                                            </h4>
-                                            <p className="text-sm text-yellow-900 dark:text-yellow-200 italic">"{selectedEvent.feedback}"</p>
+                                    {isEditingEvent && editForm ? (
+                                        <div className="space-y-4 animate-fade-in">
+                                            <div>
+                                                <label className="block text-sm font-bold text-main mb-1">Description</label>
+                                                <textarea
+                                                    className="w-full p-2 rounded-lg border border-border bg-page text-main h-32"
+                                                    value={editForm.description}
+                                                    onChange={e => setEditForm({ ...editForm, description: e.target.value })}
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-bold text-main mb-1">Actions Taken</label>
+                                                <textarea
+                                                    className="w-full p-2 rounded-lg border border-border bg-page text-main h-32"
+                                                    value={editForm.actionsTaken || ''}
+                                                    onChange={e => setEditForm({ ...editForm, actionsTaken: e.target.value })}
+                                                />
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <label className="block text-sm font-bold text-main mb-1">Participants</label>
+                                                    <input
+                                                        type="number"
+                                                        className="w-full p-2 rounded-lg border border-border bg-page text-main"
+                                                        value={editForm.participants}
+                                                        onChange={e => setEditForm({ ...editForm, participants: parseInt(e.target.value) || 0 })}
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-bold text-main mb-1">Date</label>
+                                                    <input
+                                                        type="date"
+                                                        className="w-full p-2 rounded-lg border border-border bg-page text-main"
+                                                        value={editForm.date}
+                                                        onChange={e => setEditForm({ ...editForm, date: e.target.value })}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="flex justify-end gap-2 pt-4">
+                                                <button
+                                                    onClick={() => setIsEditingEvent(false)}
+                                                    className="px-4 py-2 text-sm font-medium text-muted hover:text-main"
+                                                >
+                                                    Cancel
+                                                </button>
+                                                <button
+                                                    onClick={async () => {
+                                                        await editEvent(selectedEvent.id, editForm);
+                                                        setIsEditingEvent(false);
+                                                        setSelectedEvent({ ...selectedEvent, ...editForm });
+                                                    }}
+                                                    className="px-4 py-2 text-sm font-bold bg-brand-600 text-white rounded-lg hover:bg-brand-700"
+                                                >
+                                                    Save Changes
+                                                </button>
+                                            </div>
                                         </div>
+                                    ) : (
+                                        <>
+                                            <div>
+                                                <h3 className="text-lg font-bold text-main mb-3 flex items-center"><Info size={18} className="mr-2 text-brand-500" /> Description</h3>
+                                                <p className="text-muted leading-relaxed whitespace-pre-wrap">{selectedEvent.description}</p>
+                                            </div>
+
+                                            <div>
+                                                <h3 className="text-lg font-bold text-main mb-3 flex items-center"><CheckCircle2 size={18} className="mr-2 text-green-500" /> Actions Taken</h3>
+                                                <p className="text-muted leading-relaxed whitespace-pre-wrap">{selectedEvent.actionsTaken || "No specific actions details provided."}</p>
+                                            </div>
+
+                                            {/* Admin Feedback Section */}
+                                            {selectedEvent.feedback && (
+                                                <div className="bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-yellow-800 rounded-xl p-4">
+                                                    <h4 className="text-sm font-bold text-yellow-800 dark:text-yellow-400 mb-2 flex items-center">
+                                                        <MessageSquare size={16} className="mr-2" /> Admin Feedback
+                                                    </h4>
+                                                    <p className="text-sm text-yellow-900 dark:text-yellow-200 italic">"{selectedEvent.feedback}"</p>
+                                                </div>
+                                            )}
+                                        </>
                                     )}
                                 </div>
 
@@ -359,6 +416,19 @@ const EventGallery = ({ myEventsOnly = false }) => {
                                             )}
                                         </div>
                                     </div>
+
+                                    {/* Edit Button for Coordinators */}
+                                    {!isEditingEvent && currentUser?.role === 'Coordinator' && currentUser.departmentId === selectedEvent.departmentId && (
+                                        <button
+                                            onClick={() => {
+                                                setEditForm(selectedEvent);
+                                                setIsEditingEvent(true);
+                                            }}
+                                            className="w-full mt-4 py-2 border border-brand-200 text-brand-600 font-bold rounded-lg hover:bg-brand-50 transition-colors"
+                                        >
+                                            Edit Event Details
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         </div>

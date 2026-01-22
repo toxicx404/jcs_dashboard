@@ -7,8 +7,11 @@ import { Check, X, AlertCircle, FileText, Calendar, Trash2, Plus, Building2, Squ
 import { Event } from '../types';
 
 const AdminPanel = () => {
-    const { getPendingEvents, updateEventStatus, bulkUpdateEventStatus, departments, addDepartment, removeDepartment, events } = useJCS();
-    const pendingEvents = getPendingEvents();
+    const { getPendingEvents, updateEventStatus, bulkUpdateEventStatus, departments, addDepartment, removeDepartment, events, currentUser } = useJCS();
+
+    // We now use all events for grading, filtered by those needing attention (credits === 0).
+    // Sorting by date descending by default
+    const allEventsSorted = events.filter(e => e.credits === 0).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
     // Tabs state - Default to Monitor for overview
     const [activeTab, setActiveTab] = useState('monitor');
@@ -66,10 +69,10 @@ const AdminPanel = () => {
 
     // --- Selection Handlers ---
     const toggleSelectAll = () => {
-        if (selectedIds.length === pendingEvents.length) {
+        if (selectedIds.length === allEventsSorted.length) {
             setSelectedIds([]);
         } else {
-            setSelectedIds(pendingEvents.map(e => e.id));
+            setSelectedIds(allEventsSorted.map(e => e.id));
         }
     };
 
@@ -97,28 +100,16 @@ const AdminPanel = () => {
         setFeedback('');
     };
 
-    const handleApprove = () => {
+    const handleUpdateCredits = () => {
         if (isBulkAction) {
+            // Bulk update credits only (status remains Approved)
             bulkUpdateEventStatus(selectedIds, 'Approved', credits, feedback);
-            setActionMessage(`Successfully approved ${selectedIds.length} events.`);
+            setActionMessage(`Updated credits for ${selectedIds.length} events.`);
             setSelectedIds([]);
             setIsBulkAction(false);
         } else if (selectedEvent) {
             updateEventStatus(selectedEvent.id, 'Approved', credits, feedback);
-            setActionMessage(`Approved event: ${selectedEvent.title}`);
-            setSelectedEvent(null);
-        }
-    };
-
-    const handleReject = () => {
-        if (isBulkAction) {
-            bulkUpdateEventStatus(selectedIds, 'Rejected', 0, feedback);
-            setActionMessage(`Rejected ${selectedIds.length} events.`);
-            setSelectedIds([]);
-            setIsBulkAction(false);
-        } else if (selectedEvent) {
-            updateEventStatus(selectedEvent.id, 'Rejected', 0, feedback);
-            setActionMessage(`Rejected event: ${selectedEvent.title}`);
+            setActionMessage(`Updated credits for: ${selectedEvent.title}`);
             setSelectedEvent(null);
         }
     };
@@ -145,7 +136,7 @@ const AdminPanel = () => {
         setCredits(Math.min(100, Math.max(0, val)));
     };
 
-    const isAllSelected = pendingEvents.length > 0 && selectedIds.length === pendingEvents.length;
+    const isAllSelected = allEventsSorted.length > 0 && selectedIds.length === allEventsSorted.length;
 
     return (
         <div className="space-y-6 animate-fade-in relative select-none">
@@ -184,10 +175,7 @@ const AdminPanel = () => {
                         className={`px-3 md:px-4 py-2 rounded-md text-sm font-medium transition-all whitespace-nowrap flex items-center ${activeTab === 'approvals' ? 'bg-card text-brand-700 shadow-sm' : 'text-muted hover:text-main'}`}
                     >
                         <CheckSquare size={16} className="mr-2" />
-                        Event Approvals
-                        {pendingEvents.length > 0 && (
-                            <span className="ml-2 bg-brand-600 text-white text-[10px] px-1.5 py-0.5 rounded-full">{pendingEvents.length}</span>
-                        )}
+                        Event Grading
                     </button>
                     <button
                         onClick={() => setActiveTab('schools')}
@@ -230,16 +218,16 @@ const AdminPanel = () => {
 
                         <div className="bg-card p-5 rounded-xl border border-border shadow-sm flex items-start justify-between">
                             <div>
-                                <p className="text-xs font-bold text-muted uppercase tracking-wider">Pending Reviews</p>
-                                <h3 className="text-2xl font-black text-main mt-1">{pendingEvents.length}</h3>
-                                {pendingEvents.length > 0 ? (
+                                <p className="text-xs font-bold text-muted uppercase tracking-wider">Pending Grading</p>
+                                <h3 className="text-2xl font-black text-main mt-1">{events.filter(e => e.credits === 0).length}</h3>
+                                {events.some(e => e.credits === 0) ? (
                                     <p className="text-xs text-orange-500 mt-1 flex items-center"><Clock size={10} className="mr-1" /> Needs Attention</p>
                                 ) : (
                                     <p className="text-xs text-green-600 mt-1 flex items-center"><CheckCircle size={10} className="mr-1" /> All Caught Up</p>
                                 )}
                             </div>
-                            <div className={`p-2 rounded-lg ${pendingEvents.length > 0 ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-600' : 'bg-green-100 dark:bg-green-900/30 text-green-600'}`}>
-                                {pendingEvents.length > 0 ? <AlertCircle size={20} /> : <CheckCircle size={20} />}
+                            <div className={`p-2 rounded-lg ${events.some(e => e.credits === 0) ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-600' : 'bg-green-100 dark:bg-green-900/30 text-green-600'}`}>
+                                {events.some(e => e.credits === 0) ? <AlertCircle size={20} /> : <CheckCircle size={20} />}
                             </div>
                         </div>
 
@@ -378,13 +366,13 @@ const AdminPanel = () => {
                     )}
 
                     <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
-                        {pendingEvents.length === 0 ? (
+                        {allEventsSorted.length === 0 ? (
                             <div className="p-8 md:p-12 text-center text-muted">
                                 <div className="w-12 h-12 md:w-16 md:h-16 bg-page rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <Check size={24} className="md:w-8 md:h-8 text-slate-300 dark:text-slate-600" />
+                                    <Check size={24} className="md:w-8 md:h-8 text-green-500" />
                                 </div>
-                                <p className="text-base md:text-lg font-medium">All caught up!</p>
-                                <p className="text-sm">No pending events to review.</p>
+                                <h3 className="text-lg font-bold text-main mb-2">All Caught Up!</h3>
+                                <p className="text-sm">There are no new events pending grading.</p>
                             </div>
                         ) : (
                             <div>
@@ -405,7 +393,7 @@ const AdminPanel = () => {
                                 </div>
 
                                 <div className="divide-y divide-border">
-                                    {pendingEvents.map(event => {
+                                    {allEventsSorted.map(event => {
                                         const isSelected = selectedIds.includes(event.id);
                                         return (
                                             <div key={event.id} className={`p-4 md:p-6 transition-colors ${isSelected ? 'bg-brand-50/50 dark:bg-brand-900/10' : 'hover:bg-page'}`}>
@@ -457,7 +445,7 @@ const AdminPanel = () => {
                                                                 onClick={() => handleSingleReview(event)}
                                                                 className="w-full md:w-auto bg-slate-900 dark:bg-slate-700 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-slate-800 dark:hover:bg-slate-600 transition-colors shadow-sm"
                                                             >
-                                                                Review Full Details
+                                                                Review & Grade
                                                             </button>
                                                         </div>
                                                     </div>
@@ -1010,23 +998,17 @@ const AdminPanel = () => {
                                         onChange={(e) => setFeedback(e.target.value)}
                                         className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none bg-page text-main text-sm resize-none"
                                         rows={1}
-                                        placeholder="Reason for rejection or comments..."
+                                        placeholder="This is a placeholder. I need to read the rest of the file first..."
                                     />
                                 </div>
                             </div>
 
-                            <div className="flex flex-col-reverse sm:flex-row space-y-2 space-y-reverse sm:space-y-0 sm:space-x-3 justify-end shrink-0">
+                            <div className="flex justify-end shrink-0">
                                 <button
-                                    onClick={handleReject}
-                                    className="w-full sm:w-auto px-5 py-2.5 bg-red-50 dark:bg-red-900/20 text-red-600 font-bold hover:bg-red-100 dark:hover:bg-red-900/40 rounded-lg flex items-center justify-center transition-colors text-sm"
+                                    onClick={handleUpdateCredits}
+                                    className="w-full sm:w-auto px-6 py-2.5 bg-brand-600 text-white font-bold hover:bg-brand-700 rounded-lg flex items-center justify-center shadow-lg shadow-brand-200 dark:shadow-none transition-colors text-sm"
                                 >
-                                    <X size={18} className="mr-2" /> {isBulkAction ? 'Reject All' : 'Reject'}
-                                </button>
-                                <button
-                                    onClick={handleApprove}
-                                    className="w-full sm:w-auto px-6 py-2.5 bg-green-600 text-white font-bold hover:bg-green-700 rounded-lg flex items-center justify-center shadow-lg shadow-green-200 dark:shadow-none transition-colors text-sm"
-                                >
-                                    <Check size={18} className="mr-2" /> {isBulkAction ? 'Approve Selected' : 'Approve Event'}
+                                    <Check size={18} className="mr-2" /> {isBulkAction ? 'Update All Credits' : 'Save Grading'}
                                 </button>
                             </div>
                         </div>

@@ -14,8 +14,8 @@ const SidebarItem = ({ to, icon: Icon, label, onClick }: any) => (
     className={({ isActive }) => `
       relative group flex items-center px-3 py-3 my-1.5 mx-2 rounded-xl transition-all duration-300 ease-in-out
       ${isActive
-        ? 'bg-brand-600 text-white shadow-lg shadow-brand-500/30'
-        : 'text-muted hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-brand-600'
+        ? 'bg-[#DE1819] text-white shadow-lg shadow-red-500/30'
+        : 'text-muted hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-[#DE1819]'
       }
     `}
   >
@@ -91,7 +91,7 @@ const Sidebar = ({ isOpen, onClose }: any) => {
       {/* Logout Loading Overlay */}
       {isLoggingOut && (
         <div className="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-md flex flex-col items-center justify-center animate-fade-in text-white">
-          <Loader2 size={64} className="text-brand-500 animate-spin mb-6" />
+          <Loader2 size={64} className="text-[#DE1819] animate-spin mb-6" />
           <h2 className="text-2xl font-bold animate-pulse">Logging Out...</h2>
           <p className="text-slate-400 mt-2">See you next time!</p>
         </div>
@@ -115,10 +115,8 @@ const Sidebar = ({ isOpen, onClose }: any) => {
 
         {/* Header / Logo Area */}
         <div className="h-20 flex items-center justify-between px-6 border-b border-border/50">
-          <div className="flex items-center gap-3 overflow-hidden">
-            <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center text-white font-bold flex-shrink-0 shadow-brand-500/50 shadow-md">
-              J
-            </div>
+          <div className="flex items-center gap-3 overflow-hidden cursor-pointer" onClick={() => navigate('/')}>
+            <img src="/jcs-logo.png" alt="JCS Logo" className="w-10 h-10 object-contain drop-shadow-md rounded-xl" />
             <span className="font-bold text-xl tracking-tight text-main whitespace-nowrap">JCS Dashboard</span>
           </div>
 
@@ -170,7 +168,7 @@ const Sidebar = ({ isOpen, onClose }: any) => {
           {currentUser ? (
             <div className="flex items-center justify-between p-2 rounded-xl bg-card border border-border/50 shadow-sm">
               <div className="flex items-center min-w-0 flex-1">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-brand-500 to-brand-300 text-white flex items-center justify-center font-bold text-xs shadow-sm flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#DE1819] to-red-400 text-white flex items-center justify-center font-bold text-xs shadow-sm flex-shrink-0">
                   {currentUser?.name?.charAt(0) || 'U'}
                 </div>
 
@@ -183,7 +181,7 @@ const Sidebar = ({ isOpen, onClose }: any) => {
               <div className="flex items-center">
                 <button
                   onClick={() => setShowPasswordModal(true)}
-                  className="text-muted hover:text-brand-600 p-1.5 rounded-lg hover:bg-brand-50 dark:hover:bg-brand-900/20 transition-colors mr-1"
+                  className="text-muted hover:text-[#DE1819] p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors mr-1"
                   title="Change Password"
                 >
                   <KeyRound size={16} />
@@ -200,7 +198,7 @@ const Sidebar = ({ isOpen, onClose }: any) => {
           ) : (
             <NavLink
               to="/login"
-              className="w-full flex items-center justify-center p-3 rounded-xl bg-slate-900 dark:bg-brand-600 text-white font-bold text-sm shadow-lg hover:bg-slate-800 dark:hover:bg-brand-700 transition-all"
+              className="w-full flex items-center justify-center p-3 rounded-xl bg-slate-900 dark:bg-[#DE1819] text-white font-bold text-sm shadow-lg hover:bg-slate-800 dark:hover:bg-red-700 transition-all"
             >
               <LogIn size={18} className="mr-2" />
               Login
@@ -231,7 +229,7 @@ const Sidebar = ({ isOpen, onClose }: any) => {
                   value={passData.new}
                   onChange={e => setPassData({ ...passData, new: e.target.value })}
                   required
-                  className="w-full px-3 py-2 border border-border rounded-lg bg-page text-main focus:ring-2 focus:ring-brand-500 outline-none transition-all pr-10"
+                  className="w-full px-3 py-2 border border-border rounded-lg bg-page text-main focus:ring-2 focus:ring-[#DE1819] outline-none transition-all pr-10"
                   placeholder="Min. 6 characters"
                 />
                 <button
@@ -249,7 +247,7 @@ const Sidebar = ({ isOpen, onClose }: any) => {
                   value={passData.confirm}
                   onChange={e => setPassData({ ...passData, confirm: e.target.value })}
                   required
-                  className="w-full px-3 py-2 border border-border rounded-lg bg-page text-main focus:ring-2 focus:ring-brand-500 outline-none transition-all"
+                  className="w-full px-3 py-2 border border-border rounded-lg bg-page text-main focus:ring-2 focus:ring-[#DE1819] outline-none transition-all"
                 />
               </div>
 
@@ -274,7 +272,7 @@ const Sidebar = ({ isOpen, onClose }: any) => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-sm bg-brand-600 text-white font-bold rounded-lg hover:bg-brand-700 shadow-lg shadow-brand-500/20 transition-all"
+                  className="px-4 py-2 text-sm bg-[#DE1819] text-white font-bold rounded-lg hover:bg-[#b01314] shadow-lg shadow-red-500/20 transition-all"
                 >
                   Update
                 </button>

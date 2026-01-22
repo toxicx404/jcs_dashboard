@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useJCS } from '../services/JCSContext';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
-import { Save, Download, FileText, CheckCircle2, Filter, X, ExternalLink } from 'lucide-react';
+import { Save, Download, FileText, CheckCircle2, Filter, X, ExternalLink, Calendar, Users, Tag, Info, MessageSquare, Image as ImageIcon } from 'lucide-react';
 
 const Reports = () => {
   const { events, departments, updateEventStatus, currentUser } = useJCS();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [tempCredit, setTempCredit] = useState(0);
+  const [selectedEvent, setSelectedEvent] = useState<any>(null);
 
   // Interactive Filter State
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
@@ -16,11 +18,11 @@ const Reports = () => {
   let reportEvents = events;
 
   if (currentUser?.role === 'Coordinator' && currentUser.departmentId) {
-    // Coordinators only see their own department's events
-    reportEvents = events.filter(e => e.departmentId === currentUser.departmentId);
+    // Coordinators can now see all events in reports
+    reportEvents = events;
   } else if (currentUser?.role === 'Viewer') {
-    // Viewers only see Approved events
-    reportEvents = events.filter(e => e.status === 'Approved');
+    // Viewers see everything now
+    reportEvents = events;
   }
   // Admins see everything (default)
 
@@ -41,7 +43,7 @@ const Reports = () => {
 
   // --- Calculations ---
   const totalEvents = roleBasedEvents.length;
-  const approvedEvents = roleBasedEvents.filter(e => e.status === 'Approved');
+  const approvedEvents = roleBasedEvents; // Rename conceptually if needed, but for now just use all
   const totalCredits = approvedEvents.reduce((acc, curr) => acc + (curr.credits || 0), 0);
   const avgCredits = approvedEvents.length > 0 ? (totalCredits / approvedEvents.length).toFixed(1) : 0;
 
@@ -139,58 +141,17 @@ const Reports = () => {
         </div>
         {currentUser && (
           <div className="bg-card p-4 rounded-xl border border-border shadow-sm">
-            <p className="text-xs text-muted font-bold uppercase">Pending</p>
+            <p className="text-xs text-muted font-bold uppercase">Pending Grading</p>
             <p className="text-xl md:text-2xl font-bold text-orange-500 mt-1">
-              {roleBasedEvents.filter(e => e.status === 'Submitted' || e.status === 'Under Review').length}
+              {roleBasedEvents.filter(e => e.credits === 0).length}
             </p>
           </div>
         )}
       </div>
 
       {/* Charts Section */}
-      <div className={`grid grid-cols-1 ${currentUser ? 'lg:grid-cols-2' : ''} gap-6`}>
-        {currentUser && (
-          <div className="bg-card p-6 rounded-xl border border-border shadow-sm w-full min-w-0">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-main">Event Status Distribution</h3>
-              <span className="text-[10px] text-muted bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-full border border-border">Click segments to filter table</span>
-            </div>
-            <div className="h-64">
-              {statusData.length > 0 ? (
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={statusData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={80}
-                      fill="#8884d8"
-                      paddingAngle={5}
-                      dataKey="value"
-                      onClick={handlePieClick}
-                      cursor="pointer"
-                    >
-                      {statusData.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={COLORS[index % COLORS.length]}
-                          strokeWidth={statusFilter === entry.name ? 2 : 0}
-                          stroke={statusFilter === entry.name ? '#000' : 'none'}
-                          className="hover:opacity-80 transition-opacity outline-none"
-                        />
-                      ))}
-                    </Pie>
-                    <Tooltip contentStyle={tooltipContentStyle} itemStyle={tooltipItemStyle} />
-                    <Legend />
-                  </PieChart>
-                </ResponsiveContainer>
-              ) : (
-                <div className="flex items-center justify-center h-full text-muted text-sm">No data available</div>
-              )}
-            </div>
-          </div>
-        )}
+      <div className="grid grid-cols-1 gap-6">
+
 
         {/* Dept Chart - Full width for Viewers/Guests if logged out, or depending on requirements. 
             Request says "fill the spaces by adjusting the blocks size". 
@@ -279,7 +240,7 @@ const Reports = () => {
             <tbody className="divide-y divide-border">
               {tableEvents.length > 0 ? (
                 tableEvents.map(event => (
-                  <tr key={event.id} className="hover:bg-page transition-colors">
+                  <tr key={event.id} className="hover:bg-page transition-colors cursor-pointer" onClick={() => setSelectedEvent(event)}>
                     <td className="px-6 py-4 max-w-xs">
                       <p className="font-bold text-main truncate" title={event.title}>{event.title}</p>
                       <p className="text-xs text-muted">{event.date} • {event.type}</p>
@@ -300,12 +261,12 @@ const Reports = () => {
                         event.status === 'Rejected' ? 'bg-red-50 text-red-700 border-red-100 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800' :
                           'bg-yellow-50 text-yellow-700 border-yellow-100 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-800'
                         }`}>
-                        {event.status}
+                        {event.status === 'Rejected' ? 'Rejected' : event.credits > 0 ? 'Reviewed' : 'Pending'}
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      {/* Inline Credit Editing for Admins */}
-                      {currentUser?.role === 'Admin' && event.status === 'Approved' ? (
+                      {/* Inline Credit Editing for Admins - All events editable */}
+                      {currentUser?.role === 'Admin' ? (
                         editingId === event.id ? (
                           <div className="flex items-center space-x-2">
                             <input
@@ -361,6 +322,141 @@ const Reports = () => {
           </table>
         </div>
       </div>
+      {/* Event Detail Modal */}
+      {selectedEvent && createPortal(
+        <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 sm:p-6">
+          <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md transition-opacity" onClick={() => setSelectedEvent(null)} />
+          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto relative z-10 animate-scale-up flex flex-col [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
+
+            {/* Modal Header / Banner */}
+            <div className="relative h-48 sm:h-64 shrink-0 bg-slate-100 dark:bg-slate-800">
+              {selectedEvent.imageUrl ? (
+                <img src={selectedEvent.imageUrl} alt={selectedEvent.title} className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-muted">No Cover Image</div>
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+              <button
+                onClick={(e) => { e.stopPropagation(); setSelectedEvent(null); }}
+                className="absolute top-4 right-4 bg-black/40 hover:bg-black/60 text-white p-2 rounded-full backdrop-blur-sm transition-all"
+              >
+                <X size={20} />
+              </button>
+              <div className="absolute bottom-0 left-0 p-6 sm:p-8">
+                <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-2 bg-white/20 text-white backdrop-blur-md`}>
+                  {selectedEvent.status}
+                </span>
+                <h2 className="text-2xl sm:text-3xl font-black text-white leading-tight mb-1">{selectedEvent.title}</h2>
+                <p className="text-white/90 font-medium text-base">{selectedEvent.departmentName}</p>
+              </div>
+            </div>
+
+            <div className="p-6 sm:p-8 space-y-8">
+              {/* Stats Row */}
+              <div className="flex flex-wrap gap-4 sm:gap-8 pb-6 border-b border-border">
+                <div className="flex items-center">
+                  <div className="p-2 bg-brand-100 dark:bg-brand-900/30 text-brand-600 rounded-lg mr-3">
+                    <Calendar size={20} />
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted font-bold uppercase">Date</p>
+                    <p className="font-semibold text-main">{selectedEvent.date}</p>
+                  </div>
+                </div>
+                <div className="flex items-center">
+                  <div className="p-2 bg-blue-100 dark:bg-blue-900/30 text-blue-600 rounded-lg mr-3">
+                    <Users size={20} />
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted font-bold uppercase">Participants</p>
+                    <p className="font-semibold text-main">{selectedEvent.participants}</p>
+                  </div>
+                </div>
+                <div className="flex items-center">
+                  <div className="p-2 bg-purple-100 dark:bg-purple-900/30 text-purple-600 rounded-lg mr-3">
+                    <Tag size={20} />
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted font-bold uppercase">Credits</p>
+                    <p className="font-semibold text-main">{selectedEvent.credits} Pts</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="lg:col-span-2 space-y-6">
+                  <div>
+                    <h3 className="text-lg font-bold text-main mb-3 flex items-center"><Info size={18} className="mr-2 text-brand-500" /> Description</h3>
+                    <p className="text-muted leading-relaxed whitespace-pre-wrap">{selectedEvent.description}</p>
+                  </div>
+
+                  <div>
+                    <h3 className="text-lg font-bold text-main mb-3 flex items-center"><CheckCircle2 size={18} className="mr-2 text-green-500" /> Actions Taken</h3>
+                    <p className="text-muted leading-relaxed whitespace-pre-wrap">{selectedEvent.actionsTaken || "No specific actions details provided."}</p>
+                  </div>
+
+                  {selectedEvent.feedback && (
+                    <div className="bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-yellow-800 rounded-xl p-4">
+                      <h4 className="text-sm font-bold text-yellow-800 dark:text-yellow-400 mb-2 flex items-center">
+                        <MessageSquare size={16} className="mr-2" /> Admin Feedback
+                      </h4>
+                      <p className="text-sm text-yellow-900 dark:text-yellow-200 italic">"{selectedEvent.feedback}"</p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-6">
+                  <div className="bg-page rounded-xl p-5 border border-border">
+                    <h4 className="text-sm font-bold text-main uppercase tracking-wider mb-4">SDG Impact</h4>
+                    <div className="flex flex-col gap-2">
+                      {selectedEvent.sdgs.map((sdg: string) => (
+                        <div key={sdg} className="text-xs font-medium px-3 py-2 bg-card border border-border rounded-lg shadow-sm w-full flex items-center">
+                          <span className="w-1.5 h-1.5 rounded-full bg-brand-500 mr-2 shrink-0"></span>
+                          {sdg}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="bg-blue-50 dark:bg-blue-900/10 rounded-xl p-5 border border-blue-100 dark:border-blue-800">
+                    <h4 className="text-sm font-bold text-blue-900 dark:text-blue-300 uppercase tracking-wider mb-4">Documentation</h4>
+                    <div className="space-y-3">
+                      {selectedEvent.reportUrl && (
+                        <a href={selectedEvent.reportUrl} target="_blank" rel="noreferrer" className="flex items-center p-3 bg-white dark:bg-slate-800 rounded-lg border border-blue-200 dark:border-blue-700 shadow-sm hover:text-blue-600 transition-colors">
+                          <FileText size={18} className="mr-3 text-red-500" />
+                          <div className="overflow-hidden">
+                            <div className="text-sm font-bold truncate">Event Report</div>
+                            <div className="text-[10px] text-muted">View Document</div>
+                          </div>
+                        </a>
+                      )}
+                      {selectedEvent.imageUrl && (
+                        <a href={selectedEvent.imageUrl} target="_blank" rel="noreferrer" className="flex items-center p-3 bg-white dark:bg-slate-800 rounded-lg border border-blue-200 dark:border-blue-700 shadow-sm hover:text-blue-600 transition-colors">
+                          <ImageIcon size={18} className="mr-3 text-brand-500" />
+                          <div className="overflow-hidden">
+                            <div className="text-sm font-bold truncate">Cover Photo</div>
+                            <div className="text-[10px] text-muted">View Full Size</div>
+                          </div>
+                        </a>
+                      )}
+                      {selectedEvent.proofLink && (
+                        <a href={selectedEvent.proofLink} target="_blank" rel="noreferrer" className="flex items-center p-3 bg-white dark:bg-slate-800 rounded-lg border border-blue-200 dark:border-blue-700 shadow-sm hover:text-blue-600 transition-colors">
+                          <ExternalLink size={18} className="mr-3 text-blue-500" />
+                          <div className="overflow-hidden">
+                            <div className="text-sm font-bold truncate">External Proof</div>
+                            <div className="text-[10px] text-muted">Open Link</div>
+                          </div>
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
     </div>
   );
 };
