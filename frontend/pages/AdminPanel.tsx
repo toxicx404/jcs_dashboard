@@ -13,6 +13,9 @@ const AdminPanel = () => {
     // Sorting by date descending by default
     const allEventsSorted = events.filter(e => e.credits === 0).sort((a, b) => new Date(b.fromDate).getTime() - new Date(a.fromDate).getTime());
 
+    // Pending for grading is aligned with credit-based filter to avoid status mismatches
+    const pendingCount = allEventsSorted.length;
+
     // Tabs state - Default to Monitor for overview
     const [activeTab, setActiveTab] = useState('monitor');
 
@@ -172,10 +175,15 @@ const AdminPanel = () => {
                     </button>
                     <button
                         onClick={() => setActiveTab('approvals')}
-                        className={`px-3 md:px-4 py-2 rounded-md text-sm font-medium transition-all whitespace-nowrap flex items-center ${activeTab === 'approvals' ? 'bg-card text-brand-700 shadow-sm' : 'text-muted hover:text-main'}`}
+                        className={`px-3 md:px-4 py-2 rounded-md text-sm font-medium transition-all whitespace-nowrap flex items-center relative ${activeTab === 'approvals' ? 'bg-card text-brand-700 shadow-sm' : 'text-muted hover:text-main'}`}
                     >
                         <CheckSquare size={16} className="mr-2" />
                         Event Grading
+                        {pendingCount > 0 && (
+                            <span className="ml-2 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold rounded-full bg-red-500 text-white">
+                                {pendingCount}
+                            </span>
+                        )}
                     </button>
                     <button
                         onClick={() => setActiveTab('schools')}

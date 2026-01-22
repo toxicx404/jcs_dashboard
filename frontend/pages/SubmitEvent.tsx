@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useJCS } from '../services/JCSContext';
 import { useToast } from '../components/ToastContext';
 import { SDG_LIST } from '../types';
-import { Upload, CheckCircle2, Link as LinkIcon, Check, Loader2, Image as ImageIcon, FileText } from 'lucide-react';
+import { CheckCircle2, Link as LinkIcon, Check, Loader2, Image as ImageIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
 
@@ -21,7 +21,6 @@ const SubmitEvent = () => {
         participants: 0,
         sdgs: [],
         imageUrl: '',
-        reportUrl: '',
         proofLink: ''
     });
 
@@ -75,10 +74,6 @@ const SubmitEvent = () => {
         // Validation Checks
         if (!formData.imageUrl) {
             addToast("Cover Photo is required", 'error');
-            return;
-        }
-        if (!formData.reportUrl) {
-            addToast("Event Report is required", 'error');
             return;
         }
         if (formData.sdgs.length === 0) {
@@ -267,7 +262,7 @@ const SubmitEvent = () => {
                     </div>
 
                     <div>
-                        <label className={labelClass}>Description & Objectives <span className="text-red-500">*</span></label>
+                        <label className={labelClass}>Description & Objectives (In detail) <span className="text-red-500">*</span></label>
                         <textarea
                             required
                             name="description"
@@ -281,7 +276,7 @@ const SubmitEvent = () => {
                     </div>
 
                     <div>
-                        <label className={labelClass}>Actions Taken <span className="text-red-500">*</span></label>
+                        <label className={labelClass}>Actions Taken regarding Sustainability (In detail) <span className="text-red-500">*</span></label>
                         <textarea
                             required
                             name="actionsTaken"
@@ -336,14 +331,11 @@ const SubmitEvent = () => {
                     <div className="flex flex-wrap gap-6">
                         {/* 1. Cover Page Upload */}
                         {renderUploadBlock('1. Cover Photo (For Event Card)', 'imageUrl', <ImageIcon size={32} className="mb-2 text-slate-400" />, "image/*", true)}
-
-                        {/* 2. Report Upload */}
-                        {renderUploadBlock('2. Event Report (PDF/Doc)', 'reportUrl', <FileText size={32} className="mb-2 text-slate-400" />, ".pdf,.doc,.docx", true)}
                     </div>
 
-                    {/* 3. Photos Drive Link */}
+                    {/* 2. Photos Drive Link */}
                     <div>
-                        <label className={labelClass}>3. Additional Photos (Drive Link) <span className="text-slate-400 font-normal">(Optional)</span></label>
+                        <label className={labelClass}>2. Additional Photos (Drive Link) <span className="text-slate-400 font-normal">(Optional)</span></label>
                         <div className="relative">
                             <LinkIcon className="absolute left-3 top-3 text-slate-400" size={18} />
                             <input
