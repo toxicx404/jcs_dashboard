@@ -37,10 +37,35 @@ export const updateEvent = async (id: string, data: any) => {
   const event = await Event.findByPk(id);
   if (!event) return null;
 
+  const oldDepartmentId = event.departmentId;
+
   await event.update(data);
 
-  // Recalculate department credits if status is Approved
-  // In production, this might be better as a separate job or simplified trigger
+  // Handle Department Transfer
+  if (data.departmentId && oldDepartmentId && oldDepartmentId !== data.departmentId) {
+    // 1. Update OLD Department (Decrement count, Recalc credits)
+    await Department.update(
+      { eventCount: sequelize.literal('eventCount - 1') },
+      { where: { id: oldDepartmentId } }
+    );
+
+    const oldDeptEvents = await Event.findAll({ where: { departmentId: oldDepartmentId, status: 'Approved' } });
+    const oldTotal = oldDeptEvents.reduce((sum: any, e: any) => sum + (e.credits || 0), 0);
+
+    await Department.update(
+      { totalCredits: oldTotal },
+      { where: { id: oldDepartmentId } }
+    );
+
+    // 2. Update NEW Department (Increment count)
+    // Note: Total credits for new dept are handled by the standard recalc block below
+    await Department.update(
+      { eventCount: sequelize.literal('eventCount + 1') },
+      { where: { id: data.departmentId } }
+    );
+  }
+
+  // Recalculate department credits for the CURRENT department (whether changed or not) if status is Approved
   if (event.departmentId) {
     const deptEvents = await Event.findAll({
       where: {
@@ -49,7 +74,7 @@ export const updateEvent = async (id: string, data: any) => {
       }
     });
 
-    const totalCredits = deptEvents.reduce((sum, e) => sum + (e.credits || 0), 0);
+    const totalCredits = deptEvents.reduce((sum: any, e: any) => sum + (e.credits || 0), 0);
 
     await Department.update(
       { totalCredits },

@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import HeroSlider from '../components/HeroSlider.tsx';
 import LogoSection from '../components/LogoSection.tsx';
 import MagneticButton from '../components/ui/MagneticButton.tsx';
+import { useJCS } from '../services/JCSContext';
 import PartnerModal from '../components/PartnerModal';
 import {
     ArrowRight, Globe, Target, Calendar,
@@ -91,8 +92,70 @@ const MainPage = () => {
         { id: 17, title: "Partnerships", color: "bg-blue-900", icon: Handshake, desc: "The SDGs can only be realized with strong global partnerships and cooperation.", details: "We strengthen the means of implementation and revitalize the Global Partnership for Sustainable Development. This includes enhancing global macroeconomic stability and policy coordination." },
     ];
 
+    // --- Stats Logic for Floating Dock ---
+    const { events, departments } = useJCS();
+    const totalEvents = events.length;
+    const topPerformer = [...departments].sort((a, b) => b.totalCredits - a.totalCredits)[0];
+
     return (
-        <div className="bg-[#FAFAFA] text-[#292929] font-sans selection:bg-primary-100 selection:text-primary-900 overflow-x-hidden">
+        <div className="bg-[#FAFAFA] text-[#292929] font-sans selection:bg-primary-100 selection:text-primary-900 overflow-x-hidden relative">
+
+            {/* FLOATING STATS DOCK - RIGHT SIDE (Desktop Only) */}
+            {/* FLOATING STATS DOCK - RIGHT SIDE (Desktop Only) */}
+            <motion.div
+                initial={{ x: 100, y: "-50%", opacity: 0 }}
+                animate={{ x: 0, y: "-50%", opacity: 1 }}
+                transition={{ delay: 1, duration: 0.8, type: "spring" }}
+                className="fixed right-0 top-1/2 z-40 hidden xl:flex flex-col gap-4"
+            >
+                {/* Red Themed Slim Container */}
+                <div className="bg-[#DE1819]/90 backdrop-blur-xl border-l border-white/20 p-4 rounded-l-2xl shadow-xl shadow-red-900/30 flex flex-col gap-5 w-36 relative overflow-hidden group">
+                    {/* Decorative Elements */}
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 blur-[30px] rounded-full pointer-events-none translate-x-1/2 -translate-y-1/2"></div>
+                    <div className="absolute bottom-0 left-0 w-20 h-20 bg-black/20 blur-[20px] rounded-full pointer-events-none -translate-x-1/2 translate-y-1/2"></div>
+
+                    {/* Live Indicator */}
+                    <div className="absolute top-3 right-3 flex items-center gap-1.5 opacity-60">
+                        <span className="relative flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                        </span>
+                    </div>
+
+                    {/* Stat 1: Total Events (Clickable) */}
+                    <motion.div
+                        whileHover={{ scale: 1.05, x: -5 }}
+                        className="cursor-pointer"
+                        onClick={() => navigate('/gallery')}
+                    >
+                        <div className="flex items-center gap-1.5 mb-1 text-red-100">
+                            <Calendar size={12} className="opacity-80" />
+                            <span className="text-[9px] font-bold uppercase tracking-widest">Events</span>
+                        </div>
+                        <div className="text-2xl font-serif font-bold text-white ml-0.5 leading-none transition-colors group-hover:text-white/90">{totalEvents}</div>
+                    </motion.div>
+
+                    <div className="h-[1px] bg-white/20 w-full"></div>
+
+                    {/* Stat 2: Top Performer (Clickable) */}
+                    <motion.div
+                        whileHover={{ scale: 1.05, x: -5 }}
+                        className="cursor-pointer"
+                        onClick={() => navigate('/dashboard')}
+                    >
+                        <div className="flex items-center gap-1.5 mb-1 text-red-100">
+                            <Trophy size={12} className="opacity-80" />
+                            <span className="text-[9px] font-bold uppercase tracking-widest">Top Dept</span>
+                        </div>
+                        <div className="ml-0.5">
+                            <div className="text-sm font-bold text-white truncate w-full" title={topPerformer?.name || 'N/A'}>
+                                {topPerformer?.code || 'N/A'}
+                            </div>
+                            <div className="text-[10px] text-red-200/80 font-medium mt-0.5">{topPerformer?.totalCredits || 0} Pts</div>
+                        </div>
+                    </motion.div>
+                </div>
+            </motion.div>
 
             {/* Navbar - Academic Header Style */}
             <nav className={`fixed top-0 w-full z-50 transition-all duration-300 border-b border-gray-100 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm py-3' : 'bg-white py-5'}`}>
@@ -150,7 +213,8 @@ const MainPage = () => {
 
             {/* 3. About Section - Expanded & Detailed */}
             {/* 3. About Section - Expanded & Detailed */}
-            <section id="about" className="py-12 px-6 md:px-12 lg:px-24 bg-white/30 backdrop-blur-lg border-t border-white/20 relative overflow-hidden">
+            {/* 3. About Section - Expanded & Detailed */}
+            <section id="about-jcs" className="scroll-mt-28 py-12 px-6 md:px-12 lg:px-24 bg-white/30 backdrop-blur-lg border-t border-white/20 relative overflow-hidden">
                 {/* Decorative Background Element */}
                 <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gray-200/50 rounded-full blur-[100px] -mr-32 -mt-32 pointer-events-none"></div>
 
@@ -386,7 +450,7 @@ const MainPage = () => {
             </section>
 
             {/* 4. SDGs Grid - Interactive & Staggered */}
-            <section id="sdgs" className="py-5 px-6 md:px-12 lg:px-24 bg-white/40 backdrop-blur-3xl border-t border-white/20">
+            <section id="sdgs" className="scroll-mt-28 py-5 px-6 md:px-12 lg:px-24 bg-white/40 backdrop-blur-3xl border-t border-white/20">
                 <motion.div
                     initial="hidden"
                     whileInView="visible"
@@ -437,7 +501,7 @@ const MainPage = () => {
             </section>
 
             {/* 5. Initiatives - Glassy & Modern */}
-            <section id="initiatives" className="py-20 px-6 md:px-12 lg:px-24 bg-white/40 backdrop-blur-3xl border-t border-white/20 relative">
+            <section id="initiatives" className="scroll-mt-28 py-20 px-6 md:px-12 lg:px-24 bg-white/40 backdrop-blur-3xl border-t border-white/20 relative">
                 <div className="max-w-[1400px] mx-auto relative z-10">
                     <motion.div
                         initial="hidden"

@@ -211,12 +211,14 @@ const Dashboard = () => {
         <div className="bg-card p-5 lg:p-6 rounded-xl shadow-sm border border-border">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-muted text-xs lg:text-sm font-medium">Top Performer</p>
-              <h3 className="text-lg lg:text-xl font-bold text-main mt-1 truncate max-w-[150px]">{topDepartment?.code || "N/A"}</h3>
-              <p className="text-xs text-brand-600 mt-1">{topDepartment?.totalCredits || 0} Credits</p>
+              <p className="text-muted text-xs lg:text-sm font-medium">Total Events</p>
+              <h3 className="text-xl lg:text-2xl font-bold text-main mt-1">{events.length}</h3>
+              <p className="text-xs text-muted mt-1">
+                {currentUser?.role === 'Coordinator' ? 'High Score Event:' : 'Best Month:'} {bestMonth}
+              </p>
             </div>
-            <div className="p-2 bg-red-50 dark:bg-red-900/30 text-[#DE1819] rounded-lg">
-              <Trophy size={20} className="lg:w-6 lg:h-6" />
+            <div className="p-2 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 rounded-lg">
+              <Calendar size={20} className="lg:w-6 lg:h-6" />
             </div>
           </div>
         </div>
@@ -224,14 +226,14 @@ const Dashboard = () => {
         <div className="bg-card p-5 lg:p-6 rounded-xl shadow-sm border border-border">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-muted text-xs lg:text-sm font-medium">Total Approved Events</p>
-              <h3 className="text-xl lg:text-2xl font-bold text-main mt-1">{totalEvents}</h3>
-              <p className="text-xs text-muted mt-1">
-                {currentUser?.role === 'Coordinator' ? 'High Score Event:' : 'Best Month:'} {bestMonth}
+              <p className="text-muted text-xs lg:text-sm font-medium">Top Performer</p>
+              <h3 className="text-lg lg:text-xl font-bold text-main mt-1 truncate max-w-[150px]">{topDepartment?.code || "N/A"}</h3>
+              <p className="text-xs text-brand-600 mt-1">
+                {topDepartment?.totalCredits || 0} Credits • {topDepartment?.eventCount || 0} Events
               </p>
             </div>
-            <div className="p-2 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 rounded-lg">
-              <Calendar size={20} className="lg:w-6 lg:h-6" />
+            <div className="p-2 bg-red-50 dark:bg-red-900/30 text-[#DE1819] rounded-lg">
+              <Trophy size={20} className="lg:w-6 lg:h-6" />
             </div>
           </div>
         </div>

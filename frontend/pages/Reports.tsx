@@ -259,9 +259,11 @@ const Reports = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`px-2 py-1 rounded text-xs font-medium border ${event.status === 'Approved' ? 'bg-green-50 text-green-700 border-green-100 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800' :
-                        event.status === 'Rejected' ? 'bg-red-50 text-red-700 border-red-100 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800' :
-                          'bg-yellow-50 text-yellow-700 border-yellow-100 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-800'
+                      <span className={`px-2 py-1 rounded text-xs font-medium border ${event.status === 'Rejected'
+                          ? 'bg-red-50 text-red-700 border-red-100 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800'
+                          : event.credits > 0
+                            ? 'bg-green-50 text-green-700 border-green-100 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800'
+                            : 'bg-yellow-50 text-yellow-700 border-yellow-100 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-800'
                         }`}>
                         {event.status === 'Rejected' ? 'Rejected' : event.credits > 0 ? 'Reviewed' : 'Pending'}
                       </span>

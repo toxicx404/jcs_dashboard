@@ -180,6 +180,20 @@ const EventGallery = ({ myEventsOnly = false }) => {
                                     className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                                 />
 
+                                {/* Status Badge */}
+                                <div className="absolute top-3 right-3 z-10">
+                                    <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider border shadow-sm bg-opacity-90 backdrop-blur-sm
+                                        ${event.status === 'Rejected'
+                                            ? 'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/80 dark:text-red-300 dark:border-red-800'
+                                            : event.credits > 0
+                                                ? 'bg-green-100 text-green-700 border-green-200 dark:bg-green-900/80 dark:text-green-300 dark:border-green-800'
+                                                : 'bg-yellow-100 text-yellow-700 border-yellow-200 dark:bg-yellow-900/80 dark:text-yellow-300 dark:border-yellow-800'
+                                        }
+                                    `}>
+                                        {event.status === 'Rejected' ? 'Rejected' : event.credits > 0 ? 'Reviewed' : 'Pending'}
+                                    </span>
+                                </div>
+
                                 {/* Overlay department name on hover for cleaner look */}
                                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
                                     <p className="text-white font-bold text-sm truncate">{event.departmentName}</p>
