@@ -163,7 +163,7 @@ const SubmitEvent = () => {
     );
 
     return (
-        <div className="max-w-4xl mx-auto select-none">
+        <div className="w-full max-w-[1400px] mx-auto select-none">
             <div className="mb-6 lg:mb-8">
                 <h2 className="text-2xl font-bold text-main">Submit New Event</h2>
                 <p className="text-muted mt-1">Fill in the details below to submit your department's sustainability event.</p>

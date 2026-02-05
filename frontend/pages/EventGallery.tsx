@@ -98,7 +98,7 @@ const EventGallery = ({ myEventsOnly = false }) => {
     }
 
     return (
-        <div className="space-y-6 select-none">
+        <div className="space-y-6 select-none w-full max-w-[1400px] mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h2 className="text-xl md:text-2xl font-bold text-main">{myEventsOnly ? 'My Department Events' : 'Event Gallery'}</h2>

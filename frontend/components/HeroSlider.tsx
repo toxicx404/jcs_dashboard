@@ -77,27 +77,29 @@ const HeroSlider = () => {
                                 alt={slide.title}
                                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-[10000ms] ease-linear scale-100 animate-zoom-slow"
                             />
-                            <div className="absolute inset-0 z-20 flex flex-col justify-center px-6 md:px-12 lg:px-24">
-                                <motion.div
-                                    initial={{ opacity: 0, y: 20 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.8, delay: 0.3 }}
-                                    className="max-w-4xl"
-                                >
-                                    <div className="w-20 h-1 bg-[#DE1819] mb-8"></div>
-                                    <h2 className="text-white text-lg md:text-xl font-bold tracking-[0.2em] uppercase mb-4 opacity-90">
-                                        {slide.subtitle}
-                                    </h2>
-                                    <h1 className="text-white text-5xl md:text-7xl lg:text-8xl font-serif font-bold leading-tight mb-8">
-                                        {slide.title}
-                                    </h1>
-                                    <button
-                                        onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
-                                        className="px-8 py-4 bg-[#DE1819] text-white font-bold uppercase tracking-widest hover:bg-[#b01314] transition-colors flex items-center gap-3"
+                            <div className="absolute inset-0 z-20 flex flex-col justify-center items-start text-left pointer-events-none">
+                                <div className="w-full px-6 md:px-12 lg:px-24 pointer-events-auto">
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 20 }}
+                                        whileInView={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.8, delay: 0.3 }}
+                                        className="max-w-4xl flex flex-col items-start text-left"
                                     >
-                                        Explore Initiatives <ArrowRight size={20} />
-                                    </button>
-                                </motion.div>
+                                        <div className="w-20 h-1 bg-[#DE1819] mb-8"></div>
+                                        <h2 className="text-white text-lg md:text-xl font-bold tracking-[0.2em] uppercase mb-4 opacity-90 text-left">
+                                            {slide.subtitle}
+                                        </h2>
+                                        <h1 className="text-white text-5xl md:text-7xl lg:text-8xl font-serif font-bold leading-tight mb-8 text-left">
+                                            {slide.title}
+                                        </h1>
+                                        <button
+                                            onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
+                                            className="px-8 py-4 bg-[#DE1819] text-white font-bold uppercase tracking-widest hover:bg-[#b01314] transition-colors flex items-center gap-3"
+                                        >
+                                            Explore Initiatives <ArrowRight size={20} />
+                                        </button>
+                                    </motion.div>
+                                </div>
                             </div>
                         </div>
                     </SwiperSlide>

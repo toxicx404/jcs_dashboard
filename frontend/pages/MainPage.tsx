@@ -106,7 +106,7 @@ const MainPage = () => {
                 initial={{ x: 100, y: "-50%", opacity: 0 }}
                 animate={{ x: 0, y: "-50%", opacity: 1 }}
                 transition={{ delay: 1, duration: 0.8, type: "spring" }}
-                className="fixed right-0 top-1/2 z-40 hidden xl:flex flex-col gap-4"
+                className="fixed right-0 top-1/2 z-40 hidden 2xl:flex flex-col gap-4"
             >
                 {/* Red Themed Slim Container */}
                 <div className="bg-[#DE1819]/90 backdrop-blur-xl border-l border-white/20 p-4 rounded-l-2xl shadow-xl shadow-red-900/30 flex flex-col gap-5 w-36 relative overflow-hidden group">
@@ -159,29 +159,29 @@ const MainPage = () => {
 
             {/* Navbar - Academic Header Style */}
             <nav className={`fixed top-0 w-full z-50 transition-all duration-300 border-b border-gray-100 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm py-3' : 'bg-white py-5'}`}>
-                <div className="w-full px-12 flex justify-between items-center relative">
+                <div className="w-full px-6 md:px-12 lg:px-24 flex justify-between items-center relative">
                     <div className="flex items-center gap-4 cursor-pointer" onClick={() => navigate('/')}>
                         <div className="leading-tight text-slate-900">
                             <div className="font-serif font-bold text-2xl tracking-tight">JECRC Center for SDG's</div>
                             <div className="text-[11px] font-sans font-bold uppercase tracking-[0.2em] text-[#DE1819]">Center for Sustainable Development Goals</div>
                         </div>
                     </div>
-                    {/* Centered Dual Logo */}
-                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer flex items-center gap-5" onClick={() => navigate('/')}>
+                    {/* Centered Dual Logo - Hidden on smaller screens to prevent overlap */}
+                    <div className="hidden 2xl:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center gap-5" onClick={() => navigate('/')}>
                         <img
                             src="/images/jecrc_university_logo.jpg"
                             alt="JECRC University"
-                            className="h-16 object-contain"
+                            className="h-14 object-contain"
                         />
-                        <div className="h-12 w-[2px] bg-black/80 rounded-full"></div>
+                        <div className="h-10 w-[2px] bg-black/80 rounded-full"></div>
                         <img
                             src="/images/jcs_logo_header.png"
                             alt="JCS"
-                            className="h-24 object-contain"
+                            className="h-20 object-contain"
                         />
                     </div>
-                    <div className="flex items-center gap-10">
-                        <div className="hidden md:flex gap-8 text-[17px] font-bold uppercase tracking-wider text-[#292929]">
+                    <div className="flex items-center gap-6">
+                        <div className="hidden lg:flex gap-6 text-[15px] font-bold uppercase tracking-wide text-[#292929]">
                             {['About JCS', 'Our Goals', 'Initiatives', 'Events'].map((item) => (
                                 <button
                                     key={item}
@@ -195,7 +195,7 @@ const MainPage = () => {
                         </div>
                         <MagneticButton
                             onClick={handleDashboardClick}
-                            className="px-8 py-3 bg-[#DE1819] text-white font-bold text-sm tracking-widest hover:bg-[#b01314] transition-all shadow-lg hover:shadow-red-500/30 rounded-none"
+                            className="px-6 py-2.5 bg-[#DE1819] text-white font-bold text-sm tracking-widest hover:bg-[#b01314] transition-all shadow-lg hover:shadow-red-500/30 rounded-none"
                         >
                             DASHBOARD
                         </MagneticButton>

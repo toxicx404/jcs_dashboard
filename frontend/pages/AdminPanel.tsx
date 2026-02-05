@@ -142,7 +142,7 @@ const AdminPanel = () => {
     const isAllSelected = allEventsSorted.length > 0 && selectedIds.length === allEventsSorted.length;
 
     return (
-        <div className="space-y-6 animate-fade-in relative select-none">
+        <div className="space-y-6 animate-fade-in relative select-none w-full max-w-[1400px] mx-auto">
             {/* Action Toast */}
             {actionMessage && (
                 <div className="fixed top-20 right-4 z-[110] bg-slate-900 text-white px-4 py-3 md:px-6 md:py-3 rounded-lg shadow-xl animate-fade-in flex items-center text-sm md:text-base max-w-[90vw]">
