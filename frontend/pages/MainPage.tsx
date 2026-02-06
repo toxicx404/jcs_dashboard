@@ -158,7 +158,7 @@ const MainPage = () => {
             </motion.div>
 
             {/* Navbar - Academic Header Style */}
-            <nav className={`fixed top-0 w-full z-50 transition-all duration-300 border-b border-gray-100 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm py-3' : 'bg-white py-5'}`}>
+            <nav className={`fixed top-0 w-full z-50 transition-all duration-300 border-b border-gray-100 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-md py-3' : 'bg-white shadow-md py-5'}`}>
                 <div className="w-full px-6 md:px-12 lg:px-24 flex justify-between items-center relative">
                     <div className="flex items-center gap-4 cursor-pointer" onClick={() => navigate('/')}>
                         <div className="leading-tight text-slate-900">
@@ -837,18 +837,18 @@ const MainPage = () => {
             </section>
 
             {/* 7. Footer - PRESERVED AS IS */}
-            <footer className="bg-white border-t border-slate-100 pt-32 pb-12">
+            <footer className="bg-[#292929] border-t border-white/10 pt-32 pb-12">
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="grid md:grid-cols-4 gap-12 mb-20">
                         <div className="md:col-span-2">
-                            <div className="font-black text-2xl text-slate-900 mb-8 flex items-center gap-3">
+                            <div className="font-black text-2xl text-white mb-8 flex items-center gap-3">
                                 <span className="tracking-tight">JECRC Center for SGD's</span>
                             </div>
-                            <p className="text-slate-500 text-sm leading-relaxed">The Center for Sustainable Development Goals is committed to fostering a culture of sustainability and impact.</p>
+                            <p className="text-slate-200 text-sm leading-relaxed">The Center for Sustainable Development Goals is committed to fostering a culture of sustainability and impact.</p>
                         </div>
                         <div>
-                            <h4 className="font-bold text-slate-900 mb-8 text-sm uppercase tracking-wider">Explore</h4>
-                            <ul className="space-y-4 text-slate-500 text-sm">
+                            <h4 className="font-bold text-white mb-8 text-sm uppercase tracking-wider">Explore</h4>
+                            <ul className="space-y-4 text-slate-200 text-sm">
                                 <li onClick={() => window.open('https://jecrcuniversity.edu.in', '_blank')} className="hover:text-[#DE1819] cursor-pointer transition-colors">Jecrc University</li>
                                 <li onClick={() => document.getElementById('initiatives')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-[#DE1819] cursor-pointer transition-colors">Our Initiatives</li>
                                 <li onClick={() => navigate('/gallery')} className="hover:text-[#DE1819] cursor-pointer transition-colors">Events Gallery</li>
@@ -856,13 +856,13 @@ const MainPage = () => {
                             </ul>
                         </div>
                         <div>
-                            <h4 className="font-bold text-slate-900 mb-8 text-sm uppercase tracking-wider">Contact</h4>
+                            <h4 className="font-bold text-white mb-8 text-sm uppercase tracking-wider">Contact</h4>
                             <div className="flex gap-4 mb-6">
                                 <a
                                     href="https://www.instagram.com/jecrc.jcs?igsh=MW1tYmo0MHZ5YWJpOQ=="
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-500 hover:bg-gradient-to-tr hover:from-yellow-400 hover:via-red-500 hover:to-purple-500 hover:text-white transition-all duration-300 shadow-sm hover:shadow-md group"
+                                    className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-white hover:bg-gradient-to-tr hover:from-yellow-400 hover:via-red-500 hover:to-purple-500 hover:text-white transition-all duration-300 shadow-sm hover:shadow-md group"
                                 >
                                     <Instagram size={18} strokeWidth={1.5} className="group-hover:scale-110 transition-transform" />
                                 </a>
@@ -870,21 +870,21 @@ const MainPage = () => {
                                     href="https://www.linkedin.com/company/jecrc-centre-for-sustainable-development-goals/"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-500 hover:bg-[#0077b5] hover:text-white transition-all duration-300 shadow-sm hover:shadow-md group"
+                                    className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-white hover:bg-[#0077b5] hover:text-white transition-all duration-300 shadow-sm hover:shadow-md group"
                                 >
                                     <Linkedin size={18} strokeWidth={1.5} className="group-hover:scale-110 transition-transform" />
                                 </a>
                                 <a
                                     href="mailto:csdg@jecrcu.edu.in"
-                                    className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-500 hover:bg-[#DE1819] hover:text-white transition-all duration-300 shadow-sm hover:shadow-md group"
+                                    className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-white hover:bg-[#DE1819] hover:text-white transition-all duration-300 shadow-sm hover:shadow-md group"
                                 >
                                     <Mail size={18} strokeWidth={1.5} className="group-hover:scale-110 transition-transform" />
                                 </a>
                             </div>
                         </div>
                     </div>
-                    <div className="border-t border-slate-100 pt-10 flex flex-col md:flex-row justify-between items-center gap-6 text-xs text-slate-400 uppercase tracking-wider">
-                        <div>&copy; 2025 JECRC University Center for SDGs. All rights reserved.</div>
+                    <div className="border-t border-white/10 pt-10 flex flex-col md:flex-row justify-between items-center gap-6 text-xs text-slate-400 uppercase tracking-wider">
+                        <div>&copy; 2026 JECRC University Center for SDGs. All rights reserved.</div>
                         <div>Designed by JCS.</div>
                     </div>
                 </div>
