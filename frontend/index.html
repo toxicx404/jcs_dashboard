@@ -165,8 +165,14 @@
             'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
             'shimmer': 'shimmer 1.5s infinite linear',
             'slide-in-right': 'slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+            'zoom-slow': 'zoom 20s linear infinite',
           },
           keyframes: {
+            zoom: {
+              '0%': { transform: 'scale(1)' },
+              '50%': { transform: 'scale(1.05)' },
+              '100%': { transform: 'scale(1)' },
+            },
             fadeIn: {
               '0%': { opacity: '0', transform: 'translateY(10px)' },
               '100%': { opacity: '1', transform: 'translateY(0)' },

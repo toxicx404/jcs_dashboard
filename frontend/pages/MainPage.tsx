@@ -1,17 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import HeroSlider from '../components/HeroSlider.tsx';
 import LogoSection from '../components/LogoSection.tsx';
 import MagneticButton from '../components/ui/MagneticButton.tsx';
 import { useJCS } from '../services/JCSContext';
-import PartnerModal from '../components/PartnerModal';
+// Lazy load PartnerModal to reduce initial bundle size
+const PartnerModal = lazy(() => import('../components/PartnerModal'));
 import {
     ArrowRight, Globe, Target, Calendar,
     Leaf, Users, Lightbulb, X,
     Mic, Trophy, Zap, Layout, Recycle, Instagram, Linkedin, Mail, ArrowUp,
     Wallet, Wheat, HeartPulse, GraduationCap, Droplets, TrendingUp, Factory, Scale, Building2, Fish, TreePine, Gavel, Handshake, Check, ChevronDown
 } from 'lucide-react';
+
 
 const MainPage = () => {
     const navigate = useNavigate();
@@ -31,9 +33,30 @@ const MainPage = () => {
     };
 
     // Handle scroll for navbar styling
+    // Handle scroll for navbar styling - Throttled
     useEffect(() => {
-        const handleScroll = () => setScrolled(window.scrollY > 50);
-        window.addEventListener('scroll', handleScroll);
+        let lastScrollY = window.scrollY;
+        let ticking = false;
+
+        const updateScrolled = () => {
+            const currentScrollY = window.scrollY;
+            if (currentScrollY > 50) {
+                setScrolled(true);
+            } else {
+                setScrolled(false);
+            }
+            lastScrollY = currentScrollY;
+            ticking = false;
+        };
+
+        const handleScroll = () => {
+            if (!ticking) {
+                window.requestAnimationFrame(updateScrolled);
+                ticking = true;
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
@@ -214,9 +237,9 @@ const MainPage = () => {
             {/* 3. About Section - Expanded & Detailed */}
             {/* 3. About Section - Expanded & Detailed */}
             {/* 3. About Section - Expanded & Detailed */}
-            <section id="about-jcs" className="scroll-mt-28 py-12 px-6 md:px-12 lg:px-24 bg-white/30 backdrop-blur-lg border-t border-white/20 relative overflow-hidden">
+            <section id="about-jcs" className="scroll-mt-28 py-12 px-6 md:px-12 lg:px-24 bg-white/30 backdrop-blur-md border-t border-white/20 relative overflow-hidden" style={{ contentVisibility: 'auto' }}>
                 {/* Decorative Background Element */}
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gray-200/50 rounded-full blur-[100px] -mr-32 -mt-32 pointer-events-none"></div>
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gray-200/50 rounded-full blur-[60px] -mr-32 -mt-32 pointer-events-none"></div>
 
                 <div className="max-w-[1400px] mx-auto relative z-10">
                     <motion.div
@@ -251,7 +274,7 @@ const MainPage = () => {
                                     <motion.div
                                         animate={{ scale: [1, 1.15, 1], opacity: [0.5, 0.8, 0.5] }}
                                         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                                        className="absolute inset-0 bg-gradient-to-tr from-blue-50 to-emerald-50 rounded-full blur-[60px]"
+                                        className="absolute inset-0 bg-gradient-to-tr from-blue-50 to-emerald-50 rounded-full blur-[40px]"
                                     ></motion.div>
                                     <motion.img
                                         variants={float}
@@ -301,8 +324,8 @@ const MainPage = () => {
                         <div className="relative">
                             {/* Mesh Gradient Background for this specific section */}
                             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] -z-10 opacity-70 pointer-events-none overflow-hidden">
-                                <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-blue-400/20 rounded-full blur-[100px] mix-blend-multiply animate-pulse"></div>
-                                <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-red-400/20 rounded-full blur-[100px] mix-blend-multiply animate-pulse" style={{ animationDelay: '2s' }}></div>
+                                <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-blue-400/20 rounded-full blur-[60px] mix-blend-multiply animate-pulse"></div>
+                                <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-red-400/20 rounded-full blur-[60px] mix-blend-multiply animate-pulse" style={{ animationDelay: '2s' }}></div>
                             </div>
 
                             <motion.div variants={fadeInUp} className="mb-12 text-center md:text-left relative z-10">
@@ -364,10 +387,10 @@ const MainPage = () => {
                                     <motion.div
                                         key={idx}
                                         variants={fadeInUp}
-                                        className="relative overflow-hidden bg-white/60 backdrop-blur-xl p-8 rounded-3xl border border-white/60 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group flex flex-col h-full"
+                                        className="relative overflow-hidden bg-white/60 backdrop-blur-md p-8 rounded-3xl border border-white/60 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group flex flex-col h-full"
                                     >
                                         {/* Dynamic Blended Blob inside card - Fill on Hover */}
-                                        <div className={`absolute -top-20 -right-20 w-64 h-64 ${item.color.split(' ').find(c => c.startsWith('blob-'))?.replace('blob-', 'bg-') || 'bg-gray-100'} opacity-20 blur-[60px] rounded-full pointer-events-none group-hover:scale-[25] group-hover:opacity-50 transition-all duration-1000 ease-in-out`}></div>
+                                        <div className={`absolute -top-20 -right-20 w-64 h-64 ${item.color.split(' ').find(c => c.startsWith('blob-'))?.replace('blob-', 'bg-') || 'bg-gray-100'} opacity-20 blur-[40px] rounded-full pointer-events-none group-hover:scale-[25] group-hover:opacity-50 transition-all duration-1000 ease-in-out`}></div>
 
                                         <div className="relative z-10 flex flex-col h-full">
                                             <div className="flex justify-between items-start mb-6">
@@ -410,7 +433,7 @@ const MainPage = () => {
                             className="grid md:grid-cols-2 gap-8 md:gap-16 items-center bg-gradient-to-br from-[#292929] to-[#1a1a1a] p-12 rounded-[2rem] shadow-2xl overflow-hidden relative"
                         >
                             {/* Decorative Elements */}
-                            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#DE1819] opacity-10 blur-[100px] rounded-full pointer-events-none -mr-32 -mt-32"></div>
+                            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#DE1819] opacity-10 blur-[60px] rounded-full pointer-events-none -mr-32 -mt-32"></div>
 
                             <div className="relative z-10">
                                 <h3 className="text-3xl font-serif font-bold text-white mb-6">Our Approach</h3>
@@ -450,7 +473,7 @@ const MainPage = () => {
             </section>
 
             {/* 4. SDGs Grid - Interactive & Staggered */}
-            <section id="sdgs" className="scroll-mt-28 py-5 px-6 md:px-12 lg:px-24 bg-white/40 backdrop-blur-3xl border-t border-white/20">
+            <section id="sdgs" className="scroll-mt-28 py-5 px-6 md:px-12 lg:px-24 bg-white/40 backdrop-blur-md border-t border-white/20" style={{ contentVisibility: 'auto' }}>
                 <motion.div
                     initial="hidden"
                     whileInView="visible"
@@ -501,7 +524,7 @@ const MainPage = () => {
             </section>
 
             {/* 5. Initiatives - Glassy & Modern */}
-            <section id="initiatives" className="scroll-mt-28 py-20 px-6 md:px-12 lg:px-24 bg-white/40 backdrop-blur-3xl border-t border-white/20 relative">
+            <section id="initiatives" className="scroll-mt-28 py-20 px-6 md:px-12 lg:px-24 bg-white/40 backdrop-blur-md border-t border-white/20 relative" style={{ contentVisibility: 'auto' }}>
                 <div className="max-w-[1400px] mx-auto relative z-10">
                     <motion.div
                         initial="hidden"
@@ -548,9 +571,9 @@ const MainPage = () => {
             </section>
 
             {/* 5.5. Generation Green Campaign - Emerald Theme (Flagship) */}
-            <section id="generation-green" className="py-20 px-6 md:px-12 lg:px-24 bg-emerald-50 relative overflow-hidden">
+            <section id="generation-green" className="py-20 px-6 md:px-12 lg:px-24 bg-emerald-50 relative overflow-hidden" style={{ contentVisibility: 'auto' }}>
                 {/* Decorative Background Element */}
-                <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-emerald-100/40 rounded-full blur-[120px] -ml-32 -mt-32 pointer-events-none"></div>
+                <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-emerald-100/40 rounded-full blur-[60px] -ml-32 -mt-32 pointer-events-none"></div>
 
                 <div className="max-w-[1400px] mx-auto relative z-10">
                     <motion.div
@@ -640,7 +663,7 @@ const MainPage = () => {
                                 variants={fadeInUp}
                                 className="bg-emerald-900 p-10 rounded-[2rem] text-white flex flex-col justify-between relative overflow-hidden group"
                             >
-                                <div className="absolute bottom-0 right-0 w-64 h-64 bg-emerald-500 opacity-20 blur-[80px] rounded-full pointer-events-none transition-opacity group-hover:opacity-30"></div>
+                                <div className="absolute bottom-0 right-0 w-64 h-64 bg-emerald-500 opacity-20 blur-[50px] rounded-full pointer-events-none transition-opacity group-hover:opacity-30"></div>
 
                                 <div>
                                     <h3 className="text-2xl font-serif font-bold mb-6 flex items-center gap-3">
@@ -696,9 +719,9 @@ const MainPage = () => {
             </section>
 
             {/* 6. Flagship Event - Respire '25 Bento Grid (Animated) */}
-            <section id="events" className="py-20 px-6 bg-white/40 backdrop-blur-3xl border-t border-white/20 relative overflow-hidden">
+            <section id="events" className="py-20 px-6 bg-white/40 backdrop-blur-md border-t border-white/20 relative overflow-hidden" style={{ contentVisibility: 'auto' }}>
                 {/* Background Blur */}
-                <div className="absolute top-1/2 left-1/4 w-[800px] h-[800px] bg-red-500/5 rounded-full blur-[120px] pointer-events-none -translate-y-1/2"></div>
+                <div className="absolute top-1/2 left-1/4 w-[800px] h-[800px] bg-red-500/5 rounded-full blur-[60px] pointer-events-none -translate-y-1/2"></div>
 
                 <div className="max-w-[1400px] mx-auto relative z-10">
                     <motion.div
@@ -1012,7 +1035,11 @@ const MainPage = () => {
 
 
             {/* Partner Modal */}
-            <PartnerModal isOpen={isPartnerModalOpen} onClose={() => setIsPartnerModalOpen(false)} />
+            <Suspense fallback={null}>
+                {isPartnerModalOpen && (
+                    <PartnerModal isOpen={isPartnerModalOpen} onClose={() => setIsPartnerModalOpen(false)} />
+                )}
+            </Suspense>
 
             {/* Scroll to Top Button */}
             <motion.button

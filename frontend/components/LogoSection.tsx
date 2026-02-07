@@ -14,6 +14,7 @@ const LogoSection = () => {
                     className="flex gap-16 items-center whitespace-nowrap px-8"
                     animate={{ x: ["0%", "-50%"] }}
                     transition={{ repeat: Infinity, duration: 30, ease: "linear" }}
+                    style={{ willChange: "transform" }}
                 >
                     {[...logos, ...logos, ...logos].map((logo, index) => (
                         <div key={index} className="text-2xl font-serif font-bold text-slate-300 hover:text-[#DE1819] transition-colors cursor-default">
