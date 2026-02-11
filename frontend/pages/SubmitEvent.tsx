@@ -50,6 +50,13 @@ const SubmitEvent = () => {
             const file = e.target.files[0];
             setUploadingField(field);
 
+            // 5MB Limit Check
+            if (file.size > 5 * 1024 * 1024) {
+                addToast("File size exceeds 5MB limit", 'error');
+                setUploadingField(null);
+                return;
+            }
+
             try {
                 const url = await api.uploadFile(file);
                 setFormData(prev => ({ ...prev, [field]: url }));
@@ -159,6 +166,7 @@ const SubmitEvent = () => {
                     </>
                 )}
             </div>
+            <p className="text-xs text-muted mt-1">File size should be less than 5 MB</p>
         </div>
     );
 

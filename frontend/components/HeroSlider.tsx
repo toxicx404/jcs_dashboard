@@ -41,12 +41,12 @@ const slides = [
     {
         id: 5,
         image: "/images/hero/slide5.jpg",
-        title: "Sustainable Communties",
+        title: "Sustainable Communities",
         subtitle: "Fostering Eco-Friendly Living Spaces"
     },
     {
         id: 6,
-        image: "/images/hero/slide6.jpg",
+        image: "/images/hero/slide6.jpeg",
         title: "Youth Voices",
         subtitle: "Amplifying the Call for Climate Action"
     }
