@@ -10,5 +10,7 @@ export const config = {
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASS || 'password',
     name: process.env.DB_NAME || 'jcs_dashboard'
-  }
+  },
+  jwtSecret: process.env.JWT_SECRET || 'super_secret_key_change_in_production',
+  jwtExpiresIn: '1d'
 };

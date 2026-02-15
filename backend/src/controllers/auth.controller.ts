@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import { User } from '../models/user.model';
+import jwt from 'jsonwebtoken';
+import { config } from '../config/env';
 
 // --- Controller Methods ---
 
@@ -58,13 +60,23 @@ export const login = async (req: Request, res: Response): Promise<any> => {
         user.lastLogin = new Date();
         await user.save();
 
-        // 4. Return User Info
+        // 4. Generate Token
+        const token = jwt.sign(
+            { id: user.id, email: user.email, role: user.role, departmentId: user.departmentId },
+            config.jwtSecret,
+            { expiresIn: config.jwtExpiresIn as any } // Cast to any to satisfy stricter type checks if needed, or ensure it matches SignOptions
+        );
+
+        // 5. Return User Info & Token
         return res.json({
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            role: user.role,
-            departmentId: user.departmentId
+            token,
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                departmentId: user.departmentId
+            }
         });
 
     } catch (error) {
